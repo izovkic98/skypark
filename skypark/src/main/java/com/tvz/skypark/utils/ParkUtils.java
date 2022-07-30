@@ -6,7 +6,6 @@ public class ParkUtils {
 	public enum VehicleManufacturer {
 
 		
-		Abarth,
 		Audi, 
 		Bentley,
 		Cadillac,
