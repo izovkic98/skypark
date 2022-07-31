@@ -1,5 +1,6 @@
 package com.tvz.skypark.model;
 
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,9 +15,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.tvz.skypark.utils.ParkUtils;
-import com.tvz.skypark.utils.ParkUtils.Role;
 
 import lombok.Data;
 
@@ -67,36 +68,12 @@ public class User implements Serializable{
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Reservation> reservations;
 	
+	@Transient
+	private String jwtToken;
+	
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="role", nullable=false)
 	private ParkUtils.Role role;
-	
-	
-	public User() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public User(Long id, String firstName, String lastName, String username, String password, String address,
-			String email, String phoneNumber, LocalDateTime createTime, String imagePath, List<Vehicle> vehicles,
-			List<Reservation> reservations, Role role) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.username = username;
-		this.password = password;
-		this.address = address;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.createTime = createTime;
-		this.imagePath = imagePath;
-		this.vehicles = vehicles;
-		this.reservations = reservations;
-		this.role = role;
-	}
-
 	
 }

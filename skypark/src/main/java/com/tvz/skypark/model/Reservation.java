@@ -56,24 +56,5 @@ public class Reservation implements Serializable{
 	@Column(name="price", nullable = false )	
 	private Double price;
 	
-	public Reservation() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Reservation(Long id, Long userId, User user, Long vehicleId, Vehicle vehicle, LocalDateTime dateFrom,
-			LocalDateTime dateTo, LocalDateTime purchaseDate, Double price) {
-		super();
-		this.id = id;
-		this.userId = userId;
-		this.user = user;
-		this.vehicleId = vehicleId;
-		this.vehicle = vehicle;
-		this.dateFrom = dateFrom;
-		this.dateTo = dateTo;
-		this.reservationDate = purchaseDate;
-		this.price = price;
-	}
-
 
 }

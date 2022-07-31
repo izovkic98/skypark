@@ -50,22 +50,5 @@ public class Vehicle implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private VehicleType type;
 	
-	public Vehicle() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Vehicle(Long id, Long userId, User user, String model, LocalDateTime createTime,
-			VehicleManufacturer manufacturer, VehicleType type) {
-		super();
-		this.id = id;
-		this.userId = userId;
-		this.user = user;
-		this.model = model;
-		this.createTime = createTime;
-		this.manufacturer = manufacturer;
-		this.type = type;
-	}
-
 
 }
