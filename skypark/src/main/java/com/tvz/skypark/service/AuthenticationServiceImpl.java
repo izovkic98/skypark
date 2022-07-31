@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwt = jwtProvider.generateToken(userPrinciple);
 
         User signInUser = userPrinciple.getUser();
-        signInUser.setJwtToken(jwt);
+        signInUser.setToken(jwt);
 
         return signInUser;
 	}
