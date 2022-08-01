@@ -91,6 +91,12 @@ public class ParkUtils {
 		USER, ADMIN;
 
 	}
+	
+	public enum ReservationStatus {
+		
+		APPROVED, DENIED, IN_PROCESS
+
+	}
 
 	
 }

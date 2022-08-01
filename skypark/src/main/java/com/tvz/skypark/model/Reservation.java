@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
+
 import lombok.Data;
+
 
 @Data
 @Entity
@@ -58,5 +63,7 @@ public class Reservation implements Serializable{
 	@Column(name="price", nullable = false )	
 	private Double price;
 	
+	@Enumerated(EnumType.STRING)
+	private ReservationStatus reservationStatus;
 
 }
