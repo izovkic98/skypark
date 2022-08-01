@@ -64,9 +64,6 @@ public class User implements Serializable {
 	private String imagePath;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Vehicle> vehicles;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Reservation> reservations;
 
 	@Transient

@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
+import com.tvz.skypark.utils.ParkUtils.VehicleManufacturer;
+import com.tvz.skypark.utils.ParkUtils.VehicleType;
 
 import lombok.Data;
 
@@ -44,12 +46,14 @@ public class Reservation implements Serializable{
 	@JoinColumn	(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false )
 	private User user;
 	
-	@Column(name="vehicle_id", length=50, nullable=false, unique=true )	
-	private Long vehicleId;
+	@Column(name="model", length=50, nullable=false, unique=true )	
+	private String vehicleModel;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="vehicle_id", referencedColumnName = "id",  insertable = false, updatable = false )	
-	private Vehicle vehicle;
+	@Enumerated(EnumType.STRING)
+	private VehicleManufacturer vehicleManufacturer;
+
+	@Enumerated(EnumType.STRING)
+	private VehicleType vehicleType;
 	
 	@Column(name="date_from", nullable = false )	
 	private LocalDateTime dateFrom;
