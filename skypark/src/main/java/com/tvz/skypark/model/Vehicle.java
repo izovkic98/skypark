@@ -1,5 +1,6 @@
 package com.tvz.skypark.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -26,6 +27,7 @@ public class Vehicle implements Serializable {
 	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = -2275070202804654306L;
 	
 	@Id
