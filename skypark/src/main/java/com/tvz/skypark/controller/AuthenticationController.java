@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tvz.skypark.dto.UserLoginDto;
 import com.tvz.skypark.dto.UserRegistrationDto;
 import com.tvz.skypark.exception.RequiredFieldIsEmptyException;
 import com.tvz.skypark.exception.UsernameOrEmailAreAlreadyTakenException;
-import com.tvz.skypark.model.User;
 import com.tvz.skypark.service.AuthenticationService;
 import com.tvz.skypark.service.UserService;
 
@@ -37,7 +37,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("sign-in")
-	public ResponseEntity<?> signIn(@RequestBody User user){
+	public ResponseEntity<?> signIn(@RequestBody UserLoginDto user){
 		return new ResponseEntity<>(authenticationService.signInUserAndReturnJWT(user), HttpStatus.OK);
 	}
 	

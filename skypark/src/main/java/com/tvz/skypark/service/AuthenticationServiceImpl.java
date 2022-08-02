@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.tvz.skypark.dto.UserLoginDto;
 import com.tvz.skypark.model.User;
 import com.tvz.skypark.security.UserPrinciple;
 import com.tvz.skypark.security.jwt.JwtProvider;
@@ -20,7 +21,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private JwtProvider jwtProvider;
 
 	@Override
-	public User signInUserAndReturnJWT(User signInRequest) {
+	public User signInUserAndReturnJWT(UserLoginDto signInRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())

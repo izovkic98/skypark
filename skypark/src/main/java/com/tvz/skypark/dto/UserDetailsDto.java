@@ -24,6 +24,7 @@ public class UserDetailsDto implements Serializable{
     private String address;
     private String email;
     private String phoneNumber;
+    private String password;
     private LocalDateTime createTime;
     private Role role;
 
@@ -36,6 +37,7 @@ public class UserDetailsDto implements Serializable{
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.username = user.getUsername();
+        this.password = user.getPassword();
         this.address = user.getAddress();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
@@ -67,7 +69,15 @@ public class UserDetailsDto implements Serializable{
         this.username = username;
     }
 
-    public String getAddress() {
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getAddress() {
         return address;
     }
 
