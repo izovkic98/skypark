@@ -1,18 +1,19 @@
 package com.tvz.skypark.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
-import com.tvz.skypark.model.User;
+import com.tvz.skypark.dto.UserDetailsDto;
+import com.tvz.skypark.dto.UserRegistrationDto;
+import com.tvz.skypark.exception.RequiredFieldIsEmptyException;
+import com.tvz.skypark.exception.UsernameOrEmailAreAlreadyTakenException;
 import com.tvz.skypark.utils.ParkUtils.Role;
 
 @Service
 public interface UserService {
 
-	User saveUser(User user);
+	UserDetailsDto saveUser(UserRegistrationDto user) throws UsernameOrEmailAreAlreadyTakenException, RequiredFieldIsEmptyException;
 
-	Optional<User> findUserByUsername(String username);
+	UserDetailsDto findUserByUsername(String username);
 
 	void changeRole(String username, Role role);
 

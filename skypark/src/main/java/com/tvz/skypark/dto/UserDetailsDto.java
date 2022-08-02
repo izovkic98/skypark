@@ -1,19 +1,30 @@
 package com.tvz.skypark.dto;
 
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import com.tvz.skypark.model.User;
 import com.tvz.skypark.utils.ParkUtils.Role;
 
-public class UserDetailsDto {
+public class UserDetailsDto implements Serializable{
 	
-    private Long id;
+	
+    /**
+	 * 
+	 */
+	@Serial
+	private static final long serialVersionUID = -532488326957388540L;
+	
+	private Long id;
     private String firstName;
     private String lastName;
     private String username;
     private String address;
     private String email;
     private String phoneNumber;
-    private String imagePath;
+    private LocalDateTime createTime;
     private Role role;
 
     public UserDetailsDto() {
@@ -28,7 +39,7 @@ public class UserDetailsDto {
         this.address = user.getAddress();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
-        this.imagePath = user.getImagePath();
+        this.createTime = user.getCreateTime();
         this.role = user.getRole();
     }
 
@@ -80,14 +91,6 @@ public class UserDetailsDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
     public Role getRole() {
         return role;
     }
@@ -102,6 +105,14 @@ public class UserDetailsDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
 	}
 	
 

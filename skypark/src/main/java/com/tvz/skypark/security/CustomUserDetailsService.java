@@ -10,20 +10,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tvz.skypark.model.User;
-import com.tvz.skypark.service.UserService;
+import com.tvz.skypark.repository.UserRepository;
 import com.tvz.skypark.utils.SecurityUtils;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
-
+    
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        User user = userService.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+        User user = userRepository
+                .findOneByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " was not found in the database"));
 
         Set<GrantedAuthority> authorities = Set.of(SecurityUtils.convertToAuthority(user.getRole().name()));
 

@@ -15,10 +15,15 @@ import com.tvz.skypark.utils.ParkUtils.Role;
 public interface UserRepository extends JpaRepository<User, Long> {
 	
     //findBy + fieldName
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameLike(String username);
 
     @Modifying
     @Query("update User set role = :role where username = :username")
     void updateUserRole(@Param("username") String username, @Param("role")Role role);
+    
+	User findByEmailLike(String email);
+	User findByUsernameLikeAndPasswordLike(String username, String password);
+	
+	Optional<User> findOneByUsername(String username);
  
 }

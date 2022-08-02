@@ -17,7 +17,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.tvz.skypark.utils.ParkUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tvz.skypark.dto.UserRegistrationDto;
+import com.tvz.skypark.utils.ParkUtils.Role;
 
 import lombok.Data;
 
@@ -48,21 +50,17 @@ public class User implements Serializable {
 	@Column(name = "password", length = 50, nullable = false)
 	private String password;
 
-	@Column(name = "address", length = 100, nullable = false)
 	private String address;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "phone_number", length = 100, nullable = false)
 	private String phoneNumber;
 
 	@Column(name = "create_time", length = 100, nullable = false)
 	private LocalDateTime createTime;
 
-	@Column(name = "image_path", length = 500, nullable = false)
-	private String imagePath;
-
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Reservation> reservations;
 
@@ -71,8 +69,18 @@ public class User implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
-	private ParkUtils.Role role;
+	private Role role;
 	
 
+	public User(UserRegistrationDto userDto) {
+		this.firstName = userDto.getFirstName();
+		this.lastName = userDto.getLastName();
+		this.username = userDto.getUsername();
+		this.email = userDto.getEmail();
+		this.password = userDto.getPassword();
+		this.createTime = LocalDateTime.now();
+		this.role = Role.USER;
+	}
+	
 
 }
