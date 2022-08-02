@@ -31,8 +31,6 @@ public class UserServiceImpl implements UserService {
 	public UserDetailsDto saveUser (UserRegistrationDto newUser) throws UsernameOrEmailAreAlreadyTakenException, RequiredFieldIsEmptyException  {
 
 		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-		
-		
 		boolean usernameInUse = userRepository.findByUsernameLike(newUser.getUsername())!=null;
 		boolean emailInUse = userRepository.findByEmailLike(newUser.getEmail())!=null;
 		if(newUser.getFirstName()==null || newUser.getLastName() == null || newUser.getEmail() == null || newUser.getUsername() == null || newUser.getPassword() == null)
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDetailsDto findUserByUsername(String username){
 		
-		User user = userRepository.findByUsernameLike(username).get();
+		User user = userRepository.findByUsernameLike(username);
 		if(user!=null)
 			return new UserDetailsDto(user);
 		else

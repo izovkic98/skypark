@@ -15,7 +15,7 @@ import com.tvz.skypark.utils.ParkUtils.Role;
 public interface UserRepository extends JpaRepository<User, Long> {
 	
     //findBy + fieldName
-    Optional<User> findByUsernameLike(String username);
+    User findByUsernameLike(String username);
 
     @Modifying
     @Query("update User set role = :role where username = :username")
