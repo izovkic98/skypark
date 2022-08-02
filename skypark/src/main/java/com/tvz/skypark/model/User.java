@@ -71,7 +71,28 @@ public class User implements Serializable {
 	@Column(name = "role", nullable = false)
 	private Role role;
 	
+	public User() {
+		super();
+	}
 
+	public User(Long id, String firstName, String lastName, String username, String password, String address,
+			String email, String phoneNumber, LocalDateTime createTime, List<Reservation> reservations, String token,
+			Role role) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.password = password;
+		this.address = address;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.createTime = createTime;
+		this.reservations = reservations;
+		this.token = token;
+		this.role = role;
+	}	
+	
 	public User(UserRegistrationDto userDto) {
 		this.firstName = userDto.getFirstName();
 		this.lastName = userDto.getLastName();
@@ -81,6 +102,5 @@ public class User implements Serializable {
 		this.createTime = LocalDateTime.now();
 		this.role = Role.USER;
 	}
-	
 
 }

@@ -12,11 +12,4 @@ public class UsernameOrEmailAreAlreadyTakenException extends Exception {
 
 	}
 
-	@Override
-	public String getMessage() {
-		return "Username and email are already taken!";
-	}
-	
-	
-
 }

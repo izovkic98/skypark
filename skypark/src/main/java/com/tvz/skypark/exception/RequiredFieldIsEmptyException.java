@@ -13,11 +13,5 @@ public class RequiredFieldIsEmptyException extends Exception {
 		super(message);
 	}
 	
-	@Override
-	public String getMessage() {
-		return "Some required fields are empty!";
-	}
-
-	
 	
 }
