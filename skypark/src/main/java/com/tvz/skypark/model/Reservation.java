@@ -62,7 +62,7 @@ public class Reservation implements Serializable{
 	@Column(name="date_to", nullable = false )	
 	private LocalDate dateTo;
 	
-	@Column(name="purchase_date", nullable = false )	
+	@Column(name="reservation_date", nullable = false )	
 	private LocalDate reservationDate;
 	
 	@Column(name="price", nullable = false )	
