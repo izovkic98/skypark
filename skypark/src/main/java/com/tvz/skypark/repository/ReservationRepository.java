@@ -19,7 +19,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             nativeQuery = true)
     List<Reservation> findAllReservationOfUser(@Param("userId") Long userId);
     
-	List<Reservation> findByUser_IdLike(String userId);
+	List<Reservation> findByUser_IdLike(@Param("userId") Long userId);
 	
     Reservation findByReservationDateLike(LocalDate reservationDate);
 	Reservation findByUserLike(User user);

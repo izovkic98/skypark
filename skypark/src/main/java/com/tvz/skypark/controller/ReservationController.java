@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tvz.skypark.dto.ReservationDetailsDto;
-import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.security.UserPrinciple;
 import com.tvz.skypark.service.ReservationService;
 
@@ -36,7 +35,7 @@ public class ReservationController {
 	}
 	
     @GetMapping("user/{username}")
-    public List<Reservation> getReservationsByUsername(@PathVariable String username) {
+    public List<ReservationDetailsDto> getReservationsByUsername(@PathVariable String username) {
         return reservationService.getReservationsByUsername(username);
     }
     
