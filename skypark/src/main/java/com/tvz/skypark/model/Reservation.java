@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,11 +39,8 @@ public class Reservation implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="user_id", nullable=false )	
-	private Long userId;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn	(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false )
+	@ManyToOne()
+	@JoinColumn	(name = "user_id")
 	private User user;
 	
 	@Column(name="model", length=50, nullable=false)	
@@ -67,6 +63,7 @@ public class Reservation implements Serializable{
 	
 	@Column(name="price", nullable = false )	
 	private Double price;
+
 	
 	@Enumerated(EnumType.STRING)
 	private ReservationStatus reservationStatus;
@@ -81,7 +78,6 @@ public class Reservation implements Serializable{
 			ReservationStatus reservationStatus) {
 		super();
 		this.id = id;
-		this.userId = userId;
 		this.user = user;
 		this.vehicleModel = vehicleModel;
 		this.vehicleManufacturer = vehicleManufacturer;
@@ -90,11 +86,11 @@ public class Reservation implements Serializable{
 		this.dateTo = dateTo;
 		this.reservationDate = reservationDate;
 		this.price = price;
-		this.reservationStatus = reservationStatus;
+		this.reservationStatus = ReservationStatus.IN_PROCESS;
 	}
 	
 	public Reservation(ReservationDetailsDto reservationDetailsDto) {
-		this.userId = reservationDetailsDto.getUserId();
+		this.user = reservationDetailsDto.getUser();
 		this.vehicleModel = reservationDetailsDto.getVehicleModel();
 		this.vehicleManufacturer = reservationDetailsDto.getVehicleManufacturer();
 		this.vehicleType = reservationDetailsDto.getVehicleType();
@@ -102,7 +98,7 @@ public class Reservation implements Serializable{
 		this.dateTo = reservationDetailsDto.getDateTo();
 		this.reservationDate = reservationDetailsDto.getReservationDate();
 		this.price = reservationDetailsDto.getPrice();
-		this.reservationStatus = reservationDetailsDto.getReservationStatus();
+		this.reservationStatus = ReservationStatus.IN_PROCESS;
 
 	}
 

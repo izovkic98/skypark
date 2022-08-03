@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.tvz.skypark.model.Reservation;
+import com.tvz.skypark.model.User;
 import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
 import com.tvz.skypark.utils.ParkUtils.VehicleManufacturer;
 import com.tvz.skypark.utils.ParkUtils.VehicleType;
@@ -19,7 +20,7 @@ public class ReservationDetailsDto implements Serializable{
 	private static final long serialVersionUID = -3275070121052197955L;
 	
 	private Long id;
-	private Long userId;
+	private User user;
 	private String vehicleModel;
 	private VehicleManufacturer vehicleManufacturer;
 	private VehicleType vehicleType;
@@ -35,7 +36,7 @@ public class ReservationDetailsDto implements Serializable{
 
 	public ReservationDetailsDto(Reservation reservation) {
 		this.id = reservation.getId();
-		this.userId = reservation.getUserId();
+		this.user = reservation.getUser();
 		this.vehicleModel = reservation.getVehicleModel();
 		this.vehicleManufacturer = reservation.getVehicleManufacturer();
 		this.vehicleType = reservation.getVehicleType();
@@ -56,15 +57,13 @@ public class ReservationDetailsDto implements Serializable{
 		this.id = id;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
-
 
 	public String getVehicleModel() {
 		return vehicleModel;
