@@ -1,12 +1,12 @@
 package com.tvz.skypark.repository.projection;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public interface ReservationItem {
 	
 	String getName();
 	String getPrice();
-	LocalDateTime getReservationTime();
+	LocalDate getReservationTime();
 
 }
  

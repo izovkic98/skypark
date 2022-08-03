@@ -1,6 +1,6 @@
 package com.tvz.skypark.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class ReservationServiceImpl implements ReservationService{
 	@Override
 	public Reservation saveReservation(Reservation reservation) {
 
-		reservation.setReservationDate(LocalDateTime.now());
+		reservation.setReservationDate(LocalDate.now());
 
 		return reservationRepository.save(reservation);
 	}
@@ -34,6 +34,11 @@ public class ReservationServiceImpl implements ReservationService{
 	@Override
 	public List<Reservation> findAllReservations() {
 		return reservationRepository.findAll();
+	}
+
+	@Override
+	public List<Reservation> findAllReservationsOfUser(Long userId) {	
+		return reservationRepository.findAllReservationOfUser(userId);
 	}
 
 

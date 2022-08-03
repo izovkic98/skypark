@@ -2,7 +2,7 @@ package com.tvz.skypark.model;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,13 +56,13 @@ public class Reservation implements Serializable{
 	private VehicleType vehicleType;
 	
 	@Column(name="date_from", nullable = false )	
-	private LocalDateTime dateFrom;
+	private LocalDate dateFrom;
 	
 	@Column(name="date_to", nullable = false )	
-	private LocalDateTime dateTo;
+	private LocalDate dateTo;
 	
 	@Column(name="purchase_date", nullable = false )	
-	private LocalDateTime reservationDate;
+	private LocalDate reservationDate;
 	
 	@Column(name="price", nullable = false )	
 	private Double price;

@@ -2,7 +2,7 @@ package com.tvz.skypark.model;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -58,7 +58,7 @@ public class User implements Serializable {
 	private String phoneNumber;
 
 	@Column(name = "create_time", length = 100, nullable = false)
-	private LocalDateTime createTime;
+	private LocalDate createTime;
 
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -76,7 +76,7 @@ public class User implements Serializable {
 	}
 
 	public User(Long id, String firstName, String lastName, String username, String password, String address,
-			String email, String phoneNumber, LocalDateTime createTime, List<Reservation> reservations, String token,
+			String email, String phoneNumber, LocalDate createTime, List<Reservation> reservations, String token,
 			Role role) {
 		super();
 		this.id = id;
@@ -99,7 +99,7 @@ public class User implements Serializable {
 		this.username = userDto.getUsername();
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
-		this.createTime = LocalDateTime.now();
+		this.createTime = LocalDate.now();
 		this.role = Role.USER;
 	}
 

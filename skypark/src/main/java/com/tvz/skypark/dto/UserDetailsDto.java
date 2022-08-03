@@ -3,7 +3,7 @@ package com.tvz.skypark.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.tvz.skypark.model.User;
 import com.tvz.skypark.utils.ParkUtils.Role;
@@ -25,7 +25,7 @@ public class UserDetailsDto implements Serializable{
     private String email;
     private String phoneNumber;
     private String password;
-    private LocalDateTime createTime;
+    private LocalDate createTime;
     private Role role;
 
     public UserDetailsDto() {
@@ -117,11 +117,11 @@ public class UserDetailsDto implements Serializable{
 		this.id = id;
 	}
 
-	public LocalDateTime getCreateTime() {
+	public LocalDate getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
+	public void setCreateTime(LocalDate createTime) {
 		this.createTime = createTime;
 	}
 	

@@ -13,6 +13,7 @@ public interface ReservationService {
 	Reservation saveReservation(Reservation reservation);
 
 	List<Reservation> findAllReservations();
+	List<Reservation> findAllReservationsOfUser(Long userId);
 
 //	List<ReservationItem> findAllReservationsOfUser(Long userId);
 

@@ -15,6 +15,11 @@ import lombok.Data;
 @Builder
 public class UserPrinciple implements UserDetails{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5167270716102441360L;
+	
 	private Long id;
 	private String username;
 	transient private String password;
