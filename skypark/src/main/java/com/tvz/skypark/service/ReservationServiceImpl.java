@@ -2,9 +2,11 @@ package com.tvz.skypark.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.tvz.skypark.dto.ReservationDetailsDto;
 import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.repository.ReservationRepository;
 
@@ -19,11 +21,11 @@ public class ReservationServiceImpl implements ReservationService{
 	}
 
 	@Override
-	public Reservation saveReservation(Reservation reservation) {
+	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) {
 
-		reservation.setReservationDate(LocalDate.now());
-
-		return reservationRepository.save(reservation);
+		reservationDetailsDto.setReservationDate(LocalDate.now());
+        
+        return new ReservationDetailsDto(reservationRepository.save(new Reservation(reservationDetailsDto)));
 	}
 
 //	@Override
@@ -32,14 +34,32 @@ public class ReservationServiceImpl implements ReservationService{
 //	}
 
 	@Override
-	public List<Reservation> findAllReservations() {
-		return reservationRepository.findAll();
+	public List<ReservationDetailsDto> findAllReservations() {
+		return reservationRepository.findAll().stream().map(ReservationDetailsDto::new).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Reservation> findAllReservationsOfUser(Long userId) {	
 		return reservationRepository.findAllReservationOfUser(userId);
 	}
+
+	@Override
+	public List<Reservation> getReservationsByUsername(String username ) {
+		
+		return reservationRepository.findByUser_UsernameLike(username);
+		
+//        List<Reservation> reservations = reservationRepository.findByUser_UsernameLike(username);
+//        List<ReservationDetailsDto> reservationList = new ArrayList<>();
+//        if(!reservations.isEmpty()) {
+//        	for(Reservation r : reservations) {
+//        		reservationList.add(new ReservationDetailsDto(r));
+//        	}
+//            return reservationList;
+//        }
+//        else
+//            return new ArrayList<>();
+	}
+
 
 
 } 

@@ -1,5 +1,8 @@
 package com.tvz.skypark.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +63,11 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void changeRole( String username, Role newRole) {
 		userRepository.updateUserRole(username, newRole);
+	}
+
+	@Override
+	public List<UserDetailsDto> getAllUsers() {
+		return userRepository.findAll().stream().map(UserDetailsDto::new).collect(Collectors.toList());
 	}
 	
 	

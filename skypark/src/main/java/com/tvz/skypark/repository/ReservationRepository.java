@@ -18,6 +18,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query(value = "SELECT * FROM reservation res where res.user_id = :userId",
             nativeQuery = true)
     List<Reservation> findAllReservationOfUser(@Param("userId") Long userId);
+    
+	List<Reservation> findByUser_IdLike(String userId);
 	
     Reservation findByReservationDateLike(LocalDate reservationDate);
 	Reservation findByUserLike(User user);
