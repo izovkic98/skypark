@@ -69,8 +69,19 @@ public class UserServiceImpl implements UserService {
 	public List<UserDetailsDto> getAllUsers() {
 		return userRepository.findAll().stream().map(UserDetailsDto::new).collect(Collectors.toList());
 	}
-	
-	
+
+	@Override
+	public UserDetailsDto getUserById(Long userId){
+
+		User user = userRepository.findById(userId).orElse(null);
+		
+		if (user != null) {
+			return new UserDetailsDto(user);
+		} else {
+			return null;
+		}
+	}
+
 	
 
 }

@@ -21,4 +21,6 @@ public interface UserService {
 
 	void changeRole(String username, Role role);
 
+	UserDetailsDto getUserById(Long id) ;
+
 }

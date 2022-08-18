@@ -67,7 +67,7 @@ public class ReservationController {
     	try {
     		reservationService.deleteReservation(reservationId);
     	} catch (ReservationNotFoundException e) {
-    		
+    		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     	}
     	
         return new ResponseEntity<>( HttpStatus.OK);
