@@ -3,16 +3,20 @@ package com.tvz.skypark.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tvz.skypark.dto.UserDetailsDto;
+import com.tvz.skypark.exception.UserNotFoundException;
 import com.tvz.skypark.security.UserPrinciple;
 import com.tvz.skypark.service.UserService;
 import com.tvz.skypark.utils.ParkUtils.Role;
@@ -41,6 +45,24 @@ public class UserController {
     public UserDetailsDto getUserById(@PathVariable Long id) {
     		return userService.getUserById(id);
 
+    }
+    
+    @PutMapping()
+    public  ResponseEntity<?>  updateUser(@RequestBody UserDetailsDto updatedUser) {
+    	return new ResponseEntity<>(userService.updateUser(updatedUser), HttpStatus.ACCEPTED);
+
+    }
+    
+    @DeleteMapping("{userId}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long userId)
+    {
+    	try {
+    		userService.deleteUser(userId);
+    	} catch (UserNotFoundException e) {
+    		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    	}
+    	
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 	
 	

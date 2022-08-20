@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -63,7 +64,7 @@ public class User implements Serializable {
 	private LocalDate createTime;
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY,  mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Reservation> reservations;
 
 	@Transient

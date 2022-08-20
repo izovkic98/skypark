@@ -62,7 +62,7 @@ public class ReservationController {
 	}
 	
     @DeleteMapping("{reservationId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long reservationId)
+    public ResponseEntity<?> deleteReservation(@PathVariable Long reservationId)
     {
     	try {
     		reservationService.deleteReservation(reservationId);

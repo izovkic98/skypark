@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.tvz.skypark.dto.UserDetailsDto;
 import com.tvz.skypark.dto.UserRegistrationDto;
 import com.tvz.skypark.exception.RequiredFieldIsEmptyException;
+import com.tvz.skypark.exception.UserNotFoundException;
 import com.tvz.skypark.exception.UsernameOrEmailAreAlreadyTakenException;
 import com.tvz.skypark.model.User;
 import com.tvz.skypark.repository.UserRepository;
@@ -80,6 +81,31 @@ public class UserServiceImpl implements UserService {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public UserDetailsDto updateUser(UserDetailsDto updatedUser) {
+		User user = userRepository.findByIdLike(updatedUser.getId());
+		user.setFirstName(updatedUser.getFirstName());
+		user.setLastName(updatedUser.getLastName());
+		user.setUsername(updatedUser.getUsername());
+		user.setEmail(updatedUser.getEmail());
+		user.setPhoneNumber(updatedUser.getPhoneNumber());
+		user.setRole(updatedUser.getRole());
+		
+		return new UserDetailsDto(userRepository.save(user));
+	}
+
+	@Override
+	public void deleteUser(Long userId) throws UserNotFoundException {
+
+			User user = userRepository.findById(userId).orElse(null);
+			if (user != null) {
+				userRepository.deleteById(userId);
+			} else {
+				throw new UserNotFoundException("User under id:" + userId + " is not found.");
+			}
+		
 	}
 
 	
