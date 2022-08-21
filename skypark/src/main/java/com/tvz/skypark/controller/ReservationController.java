@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tvz.skypark.dto.ReservationDetailsDto;
+import com.tvz.skypark.exception.ReservationDateIsIncorrectException;
 import com.tvz.skypark.exception.ReservationNotFoundException;
 import com.tvz.skypark.security.UserPrinciple;
 import com.tvz.skypark.service.ReservationService;
@@ -30,7 +31,12 @@ public class ReservationController {
 	
 	@PostMapping
 	public ResponseEntity<?> saveReservation(@RequestBody final ReservationDetailsDto reservation){
-		return new ResponseEntity<>(reservationService.saveReservation(reservation), HttpStatus.CREATED);
+		try {
+			return new ResponseEntity<>(reservationService.saveReservation(reservation), HttpStatus.CREATED);			
+		} catch (ReservationDateIsIncorrectException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+
 	}
 	
 	@GetMapping("")
@@ -58,7 +64,12 @@ public class ReservationController {
 
 	@PutMapping
 	private ResponseEntity<?> updateReservation (@RequestBody ReservationDetailsDto updatedReservation){
-		return new ResponseEntity<>(reservationService.updateReservation(updatedReservation), HttpStatus.ACCEPTED);
+		try {
+			return new ResponseEntity<>(reservationService.updateReservation(updatedReservation), HttpStatus.ACCEPTED);	
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+		
 	}
 	
     @DeleteMapping("{reservationId}")

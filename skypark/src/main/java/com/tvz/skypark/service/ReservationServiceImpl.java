@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.tvz.skypark.dto.ReservationDetailsDto;
+import com.tvz.skypark.exception.ReservationDateIsIncorrectException;
 import com.tvz.skypark.exception.ReservationNotFoundException;
 import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.repository.ReservationRepository;
@@ -22,10 +23,14 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) {
+	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) throws ReservationDateIsIncorrectException {
 
 		reservationDetailsDto.setReservationDate(LocalDate.now());
-
+		
+		if(reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
+			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
+		}
+			
 		return new ReservationDetailsDto(reservationRepository.save(new Reservation(reservationDetailsDto)));
 	}
 
@@ -55,12 +60,17 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public ReservationDetailsDto updateReservation(ReservationDetailsDto updatedReservation) {
+	public ReservationDetailsDto updateReservation(ReservationDetailsDto updatedReservation) throws ReservationDateIsIncorrectException {
 		Reservation reservation = reservationRepository.findByIdLike(updatedReservation.getId());
 		reservation.setReservationStatus(updatedReservation.getReservationStatus());
 		reservation.setVehicleModel(updatedReservation.getVehicleModel());
 		reservation.setVehicleManufacturer(updatedReservation.getVehicleManufacturer());
 		reservation.setVehicleType(updatedReservation.getVehicleType());
+		
+		if(updatedReservation.getDateFrom().isAfter(updatedReservation.getDateTo())) {
+			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
+		}
+		
 		reservation.setDateFrom(updatedReservation.getDateFrom());
 		reservation.setDateTo(updatedReservation.getDateTo());
 		reservation.setPrice(updatedReservation.getPrice());
