@@ -1,10 +1,16 @@
 package com.tvz.skypark.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 
 import com.tvz.skypark.dto.ReservationDetailsDto;
@@ -92,6 +98,39 @@ public class ReservationServiceImpl implements ReservationService {
 		} else {
 			throw new ReservationNotFoundException("Reservation under id:" + reservationId + " is not found.");
 		}
+	}
+
+	@Override
+	public void printReservation(ReservationDetailsDto reservationDetailsDto) throws IOException {
+		Reservation reservation = reservationRepository.findByIdLike(reservationDetailsDto.getId());
+ 
+		// Create a new empty document (Apache PDFBox)
+		PDDocument document = new PDDocument();
+
+		// Create a new blank page and add it to the document
+		PDPage page = new PDPage();
+		document.addPage( page );
+
+		// Create a new font object selecting one of the PDF base fonts
+		PDFont font = PDType1Font.HELVETICA_BOLD;
+
+		// Start a new content stream which will "hold" the to be created content
+		PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+		// Define a text content stream using the selected font, moving the cursor and drawing the text "Hello World"
+		contentStream.beginText();
+		contentStream.setFont( font, 12 );
+		contentStream.newLineAtOffset( 100, 700 );
+		contentStream.showText( "Hello World reservation id : " + reservation.getReservationStatus() );
+		contentStream.endText();
+
+		// Make sure that the content stream is closed:
+		contentStream.close();
+
+		// Save the results and ensure that the document is properly closed:
+		document.save( "C:\\Users\\Ivan\\PDF\\Hello World" + reservation.getId() + ".pdf");
+		document.close();
+		
 	}
 
 }

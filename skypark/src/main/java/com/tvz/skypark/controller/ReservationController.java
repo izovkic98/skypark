@@ -1,5 +1,6 @@
 package com.tvz.skypark.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,66 +22,75 @@ import com.tvz.skypark.exception.ReservationDateIsIncorrectException;
 import com.tvz.skypark.exception.ReservationNotFoundException;
 import com.tvz.skypark.security.UserPrinciple;
 import com.tvz.skypark.service.ReservationService;
+
 @CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping("api/reservation")
 public class ReservationController {
-	
+
 	@Autowired
 	private ReservationService reservationService;
-	
+
 	@PostMapping
-	public ResponseEntity<?> saveReservation(@RequestBody final ReservationDetailsDto reservation){
+	public ResponseEntity<?> saveReservation(@RequestBody final ReservationDetailsDto reservation) {
 		try {
-			return new ResponseEntity<>(reservationService.saveReservation(reservation), HttpStatus.CREATED);			
+			return new ResponseEntity<>(reservationService.saveReservation(reservation), HttpStatus.CREATED);
 		} catch (ReservationDateIsIncorrectException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 		}
 
 	}
-	
+
 	@GetMapping("")
-	public ResponseEntity<?> getAllReservationsOfUser(@AuthenticationPrincipal UserPrinciple userPrinciple){
+	public ResponseEntity<?> getAllReservationsOfUser(@AuthenticationPrincipal UserPrinciple userPrinciple) {
 		return ResponseEntity.ok(reservationService.findAllReservationsOfUser(userPrinciple.getId()));
 	}
-	
-    @GetMapping("user/{username}")
-    public List<ReservationDetailsDto> getReservationsByUsername(@PathVariable String username) {
-        return reservationService.getReservationsByUsername(username);
-    }
-    
 
-    @GetMapping("id/{id}")
-    public ReservationDetailsDto getReservationById(@PathVariable Long id) {
-        return reservationService.getReservationById(id);
-    }
-    
-    
+	@GetMapping("user/{username}")
+	public List<ReservationDetailsDto> getReservationsByUsername(@PathVariable String username) {
+		return reservationService.getReservationsByUsername(username);
+	}
+
+	@GetMapping("id/{id}")
+	public ReservationDetailsDto getReservationById(@PathVariable Long id) {
+		return reservationService.getReservationById(id);
+	}
+
 	@GetMapping("/all")
-	public  List<ReservationDetailsDto> getAllReservations(){
+	public List<ReservationDetailsDto> getAllReservations() {
 		return reservationService.findAllReservations();
 	}
-	
 
 	@PutMapping
-	private ResponseEntity<?> updateReservation (@RequestBody ReservationDetailsDto updatedReservation){
+	private ResponseEntity<?> updateReservation(@RequestBody ReservationDetailsDto updatedReservation) {
 		try {
-			return new ResponseEntity<>(reservationService.updateReservation(updatedReservation), HttpStatus.ACCEPTED);	
+			return new ResponseEntity<>(reservationService.updateReservation(updatedReservation), HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 		}
-		
+
 	}
-	
-    @DeleteMapping("{reservationId}")
-    public ResponseEntity<?> deleteReservation(@PathVariable Long reservationId)
-    {
-    	try {
-    		reservationService.deleteReservation(reservationId);
-    	} catch (ReservationNotFoundException e) {
-    		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    	}
-    	
-        return new ResponseEntity<>( HttpStatus.OK);
-    }
+
+	@DeleteMapping("{reservationId}")
+	public ResponseEntity<?> deleteReservation(@PathVariable Long reservationId) {
+		try {
+			reservationService.deleteReservation(reservationId);
+		} catch (ReservationNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/print")
+	public ResponseEntity<?> printReservation(@RequestBody final ReservationDetailsDto reservation) {
+		try {
+			reservationService.printReservation(reservation);
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+
+	}
+
 }
