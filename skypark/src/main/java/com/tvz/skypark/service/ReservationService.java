@@ -1,6 +1,5 @@
 package com.tvz.skypark.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public interface ReservationService {
 	List<ReservationDetailsDto> getReservationsByUsername(String username);
 	ReservationDetailsDto getReservationById(Long id);
 	void deleteReservation(Long reservationId) throws ReservationNotFoundException;
-	void printReservation(ReservationDetailsDto reservation) throws IOException;
+
 
 //	List<ReservationItem> findAllReservationsOfUser(Long userId);
 

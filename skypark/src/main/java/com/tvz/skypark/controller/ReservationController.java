@@ -1,9 +1,15 @@
 package com.tvz.skypark.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tvz.skypark.dto.ReservationDetailsDto;
@@ -22,6 +29,7 @@ import com.tvz.skypark.exception.ReservationDateIsIncorrectException;
 import com.tvz.skypark.exception.ReservationNotFoundException;
 import com.tvz.skypark.security.UserPrinciple;
 import com.tvz.skypark.service.ReservationService;
+
 
 @CrossOrigin(origins = "http://localhost:3000/")
 @RestController
@@ -82,10 +90,28 @@ public class ReservationController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PostMapping("/print")
-	public ResponseEntity<?> printReservation(@RequestBody final ReservationDetailsDto reservation) {
-		try {
-			reservationService.printReservation(reservation);
+	@GetMapping("/print/{reservationId}")
+	@ResponseBody
+	public ResponseEntity<?> printReservation(@PathVariable Long reservationId, HttpServletRequest request,
+			HttpServletResponse response) {
+
+	try {
+		response.setContentType("text/plain");
+		response.setHeader(
+				HttpHeaders.CONTENT_DISPOSITION,
+				"attachment; filename=sapexport"
+						 + ".txt");
+
+		OutputStream os = response.getOutputStream();
+		
+		os.write(0xef);
+		os.write(0xbb);
+		os.write(0xbf);
+		OutputStreamWriter ow = new OutputStreamWriter(os, "UTF-8");
+		ow.close();
+
+			
+			
 		} catch (IOException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 		}
