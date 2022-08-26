@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.tvz.skypark.dto.UserDetailsDto;
 import com.tvz.skypark.dto.UserRegistrationDto;
+import com.tvz.skypark.exception.PasswordTooShortException;
 import com.tvz.skypark.exception.RequiredFieldIsEmptyException;
 import com.tvz.skypark.exception.UserNotFoundException;
 import com.tvz.skypark.exception.UsernameOrEmailAreAlreadyTakenException;
@@ -34,6 +35,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDetailsDto saveUser (UserRegistrationDto newUser) throws UsernameOrEmailAreAlreadyTakenException, RequiredFieldIsEmptyException  {
 
+		if(newUser.getPassword().length() < 4) {
+			throw new PasswordTooShortException("Password is shorther than 4 charachters.");
+		}
 		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		boolean usernameInUse = userRepository.findByUsernameLike(newUser.getUsername())!=null;
 		boolean emailInUse = userRepository.findByEmailLike(newUser.getEmail())!=null;
@@ -105,6 +109,20 @@ public class UserServiceImpl implements UserService {
 			} else {
 				throw new UserNotFoundException("User under id:" + userId + " is not found.");
 			}
+		
+	}
+
+	@Override
+	public void changeUserPassword(UserDetailsDto userDetailsDto, String newPassword) {
+		User user = userRepository.findByIdLike(userDetailsDto.getId());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+		
+	}
+
+	@Override
+	public boolean checkIfValidOldPassword(UserDetailsDto user, String oldPassword) {
+		return passwordEncoder.matches(oldPassword, user.getPassword());
 		
 	}
 

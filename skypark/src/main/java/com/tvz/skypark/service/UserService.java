@@ -28,4 +28,8 @@ public interface UserService {
 
 	void deleteUser(Long userId) throws UserNotFoundException;
 
+	void changeUserPassword(UserDetailsDto user, String newPassword);
+
+	boolean checkIfValidOldPassword(UserDetailsDto user, String oldPassword);
+
 }

@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tvz.skypark.dto.UserDetailsDto;
 import com.tvz.skypark.dto.UserRegistrationDto;
 import com.tvz.skypark.utils.ParkUtils.Role;
 
@@ -97,6 +98,18 @@ public class User implements Serializable {
 	}	
 	
 	public User(UserRegistrationDto userDto) {
+		this.firstName = userDto.getFirstName();
+		this.lastName = userDto.getLastName();
+		this.username = userDto.getUsername();
+		this.address = userDto.getAddress();
+		this.phoneNumber = userDto.getPhoneNumber();
+		this.email = userDto.getEmail();
+		this.password = userDto.getPassword();
+		this.createTime = LocalDate.now();
+		this.role = Role.USER;
+	}
+	
+	public User(UserDetailsDto userDto) {
 		this.firstName = userDto.getFirstName();
 		this.lastName = userDto.getLastName();
 		this.username = userDto.getUsername();
