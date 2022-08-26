@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tvz.skypark.dto.UserDetailsDto;
+import com.tvz.skypark.exception.InvalidConfirmedPasswordException;
 import com.tvz.skypark.exception.InvalidOldPasswordException;
 import com.tvz.skypark.exception.UserNotFoundException;
 import com.tvz.skypark.security.UserPrinciple;
@@ -42,13 +43,18 @@ public class UserController {
 	
     @PutMapping("/change-password")
     public ResponseEntity<?> update(@Validated @RequestParam String newPassword, @Validated @RequestParam String oldPassword,
-    		@AuthenticationPrincipal UserPrinciple userPrinciple) {
+    		@Validated @RequestParam String confirmedNewPassword, @AuthenticationPrincipal UserPrinciple userPrinciple) {
     	
 		UserDetailsDto user = userService.findUserByUsername(userPrinciple.getUsername());
 
 		if (!userService.checkIfValidOldPassword(user, oldPassword)) {
 			throw new InvalidOldPasswordException(
 					"Password invalid for user with username:" + userPrinciple.getUsername());
+		}
+		
+		if (!newPassword.contentEquals(confirmedNewPassword)) {
+			throw new InvalidConfirmedPasswordException(
+					"Confirmed password invalid for user with username:" + userPrinciple.getUsername());
 		}
 		userService.changeUserPassword(user, newPassword);
 

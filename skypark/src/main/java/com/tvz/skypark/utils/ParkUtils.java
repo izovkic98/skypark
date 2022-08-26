@@ -94,9 +94,34 @@ public class ParkUtils {
 	
 	public enum ReservationStatus {
 		
-		APPROVED, DENIED, IN_PROCESS
+		APPROVED("APPROVED"), DENIED("DENIED"), IN_PROCESS("IN PROCESS");
+		
+		private final String naziv;
+
+		private ReservationStatus(String naziv) {
+			this.naziv = naziv;
+		}
+
+		public String getNaziv() {
+			return naziv;
+		}
 
 	}
+	
+	public enum ParkingType {
 
+		I_ZONE("I. ZONA"), II_ZONE("II. ZONA");
+
+		private final String naziv;
+
+		private ParkingType(String naziv) {
+			this.naziv = naziv;
+		}
+
+		public String getNaziv() {
+			return naziv;
+		}
+
+	}
 	
 }

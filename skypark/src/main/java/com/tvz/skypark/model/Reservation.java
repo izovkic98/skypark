@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.tvz.skypark.dto.ReservationDetailsDto;
+import com.tvz.skypark.utils.ParkUtils.ParkingType;
 import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
 import com.tvz.skypark.utils.ParkUtils.VehicleManufacturer;
 import com.tvz.skypark.utils.ParkUtils.VehicleType;
@@ -67,6 +68,9 @@ public class Reservation implements Serializable{
 	
 	@Enumerated(EnumType.STRING)
 	private ReservationStatus reservationStatus;
+	
+	@Enumerated(EnumType.STRING)
+	private ParkingType parkingType;
 	
 
 	public Reservation() {
