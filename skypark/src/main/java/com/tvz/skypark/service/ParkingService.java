@@ -10,9 +10,11 @@ import com.tvz.skypark.model.Parking;
 @Service
 public interface ParkingService {
 	void saveParking(Parking parking) ;
+	void deleteParking(Long id) ;
 	List<Parking> findAllFreeParkingsFirstZone();
 	List<Parking> findAllFreeParkingsSecondZone();
 	List<Parking> findAllOccupiedParkingsFirstZone();
 	List<Parking> findAllOccupiedParkingsSecondZone();
+	List<Parking> findAllParkingSpots();
 
 }

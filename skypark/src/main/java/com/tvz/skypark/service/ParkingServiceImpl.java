@@ -26,6 +26,11 @@ public class ParkingServiceImpl implements ParkingService {
 	public void saveParking(Parking parking) {
 		parkingRepository.save(parking);	
 	}
+	
+	@Override
+	public void deleteParking(Long id) {
+		parkingRepository.deleteById(id);
+	}
 
 	@Override
 	public List<Parking> findAllFreeParkingsFirstZone() {
@@ -58,9 +63,12 @@ public class ParkingServiceImpl implements ParkingService {
 										  .filter(parking -> parking.getParkingStatus().equals(ParkingStatus.Occupied))
 										  .collect(Collectors.toList());
 	}
-	
-	
 
-	
+	@Override
+	public List<Parking> findAllParkingSpots() {
+		return parkingRepository.findAll().stream()
+				  						  .collect(Collectors.toList());
+		
+	}
 
 }

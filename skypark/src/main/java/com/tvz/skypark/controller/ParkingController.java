@@ -1,34 +1,46 @@
 package com.tvz.skypark.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tvz.skypark.model.Parking;
 import com.tvz.skypark.service.ParkingService;
 
 @CrossOrigin(origins = "http://localhost:3000/")
 @RestController
-@RequestMapping("api/parking-management/") //pre-path
+@RequestMapping("api/parking-spots/") //pre-path
 public class ParkingController {
 	
 	@Autowired
-	private ParkingService userService;
+	private ParkingService parkingService;
 	
-//	@GetMapping("retreive/all")
-//	public ResponseEntity<?> signUp(@RequestBody UserRegistrationDto user){
-//		try {
-//			return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
-//		} catch ( UsernameOrEmailAreAlreadyTakenException|RequiredFieldIsEmptyException e) {
-//			return new ResponseEntity<>(HttpStatus.CONFLICT);
-//		}	
-//	}
+	@GetMapping("all/")
+	public List<Parking> getAllParkingSpots(){
+		return parkingService.findAllParkingSpots();
+	}
 	
-//	@GetMapping("retrieve/free")
-//	public ResponseEntity<?> signIn(@RequestBody UserLoginDto user){
-//		return new ResponseEntity<>(authenticationService.signInUserAndReturnJWT(user), HttpStatus.OK);
-//	}
-//	
+	@PostMapping("create/")
+	public ResponseEntity<?> createParking(@RequestBody Parking parking){
+		parkingService.saveParking(parking);
+		return new ResponseEntity<>( HttpStatus.CREATED); 
+	}
+	
+	@DeleteMapping("delete/")
+	public ResponseEntity<?> deleteParking(@RequestBody Long parkingId){
+		parkingService.deleteParking(parkingId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 
 
 }
