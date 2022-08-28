@@ -64,7 +64,6 @@ public class Reservation implements Serializable{
 	
 	@Column(name="price", nullable = false )	
 	private Double price;
-
 	
 	@Enumerated(EnumType.STRING)
 	private ReservationStatus reservationStatus;
@@ -79,7 +78,7 @@ public class Reservation implements Serializable{
 
 	public Reservation(Long id, Long userId, User user, String vehicleModel, VehicleManufacturer vehicleManufacturer,
 			VehicleType vehicleType, LocalDate dateFrom, LocalDate dateTo, LocalDate reservationDate, Double price,
-			ReservationStatus reservationStatus) {
+			ReservationStatus reservationStatus, ParkingType parkingType) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -91,6 +90,7 @@ public class Reservation implements Serializable{
 		this.reservationDate = reservationDate;
 		this.price = price;
 		this.reservationStatus = ReservationStatus.IN_PROCESS;
+		this.parkingType = parkingType;
 	}
 	
 	public Reservation(ReservationDetailsDto reservationDetailsDto) {
@@ -103,6 +103,8 @@ public class Reservation implements Serializable{
 		this.reservationDate = reservationDetailsDto.getReservationDate();
 		this.price = reservationDetailsDto.getPrice();
 		this.reservationStatus = ReservationStatus.IN_PROCESS;
+		this.parkingType = reservationDetailsDto.getParkingType();
+		
 
 	}
 

@@ -96,32 +96,36 @@ public class ParkUtils {
 		
 		APPROVED("APPROVED"), DENIED("DENIED"), IN_PROCESS("IN PROCESS");
 		
-		private final String naziv;
+		private final String name;
 
-		private ReservationStatus(String naziv) {
-			this.naziv = naziv;
+		private ReservationStatus(String name) {
+			this.name = name;
 		}
 
-		public String getNaziv() {
-			return naziv;
+		public String getName() {
+			return name;
 		}
 
 	}
 	
 	public enum ParkingType {
 
-		I_ZONE("I. ZONA"), II_ZONE("II. ZONA");
+		I_ZONE("I. ZONE"), II_ZONE("II. ZONE");
 
-		private final String naziv;
+		private final String name;
 
-		private ParkingType(String naziv) {
-			this.naziv = naziv;
+		private ParkingType(String name) {
+			this.name = name;
 		}
 
-		public String getNaziv() {
-			return naziv;
+		public String getName() {
+			return name;
 		}
 
+	}
+	
+	public enum ParkingStatus {
+		Free, Occupied
 	}
 	
 }

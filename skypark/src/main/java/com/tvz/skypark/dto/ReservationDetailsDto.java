@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.model.User;
+import com.tvz.skypark.utils.ParkUtils.ParkingType;
 import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
 import com.tvz.skypark.utils.ParkUtils.VehicleManufacturer;
 import com.tvz.skypark.utils.ParkUtils.VehicleType;
@@ -29,6 +30,7 @@ public class ReservationDetailsDto implements Serializable{
 	private LocalDate reservationDate;
 	private Double price;
 	private ReservationStatus reservationStatus;
+	private ParkingType parkingType;
 
 	public ReservationDetailsDto() {
 		
@@ -45,6 +47,7 @@ public class ReservationDetailsDto implements Serializable{
 		this.reservationDate = reservation.getReservationDate();
 		this.price = reservation.getPrice();
 		this.reservationStatus = reservation.getReservationStatus();
+		this.parkingType = reservation.getParkingType();
 	}
 
 
@@ -142,6 +145,14 @@ public class ReservationDetailsDto implements Serializable{
 
 	public void setReservationStatus(ReservationStatus reservationStatus) {
 		this.reservationStatus = reservationStatus;
+	}
+
+	public ParkingType getParkingType() {
+		return parkingType;
+	}
+
+	public void setParkingType(ParkingType parkingType) {
+		this.parkingType = parkingType;
 	}
 	
 
