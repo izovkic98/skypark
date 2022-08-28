@@ -89,46 +89,6 @@ public class ReservationServiceImpl implements ReservationService {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
 		}
 		
-		if(updatedReservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
-			
-			// logika u vezi micanja parking mjesta po zonama
-			if (updatedReservation.getParkingType().equals(ParkingType.I_ZONE)) {
-				Parking parking = parkingService.findAllFreeParkingsFirstZone().stream()
-																		       .findFirst()
-																		       .orElseThrow(()->new FullParkingException("Parking is full!"));
-				parking.setParkingStatus(ParkingStatus.Occupied);
-				parkingRepository.save(parking);
-
-			} else {
-				Parking parking = parkingService.findAllFreeParkingsSecondZone().stream()
-																			    .findFirst()
-																			    .orElseThrow(()->new FullParkingException("Parking is full!"));
-				parking.setParkingStatus(ParkingStatus.Occupied);
-				parkingRepository.save(parking);
-
-			}
-			
-		} else if (updatedReservation.getReservationStatus().equals(ReservationStatus.IN_PROCESS)) {
-			// logika u vezi micanja parking mjesta po zonama
-
-			if (updatedReservation.getParkingType().equals(ParkingType.I_ZONE)) {
-				Parking parking = parkingService.findAllOccupiedParkingsFirstZone().stream()
-																		   		   .findFirst().get();
-	
-				parking.setParkingStatus(ParkingStatus.Free);
-				parkingRepository.save(parking);
-
-			} else {
-				Parking parking = parkingService.findAllOccupiedParkingsSecondZone().stream()
-																					.findFirst().get();
-
-				parking.setParkingStatus(ParkingStatus.Free);
-				parkingRepository.save(parking);
-
-			}
-			
-		}
-		
 		reservation.setReservationStatus(updatedReservation.getReservationStatus());
 		reservation.setVehicleModel(updatedReservation.getVehicleModel());
 		reservation.setVehicleManufacturer(updatedReservation.getVehicleManufacturer());
@@ -171,6 +131,57 @@ public class ReservationServiceImpl implements ReservationService {
 		} else {
 			throw new ReservationNotFoundException("Reservation under id:" + reservationId + " is not found.");
 		}
+	}
+
+	@Override
+	public ReservationDetailsDto changeReservationStatus(ReservationDetailsDto updatedReservation) throws ReservationDateIsIncorrectException, FullParkingException {
+		
+		Reservation reservation = reservationRepository.findByIdLike(updatedReservation.getId());
+		
+		if(updatedReservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
+			
+			// logika u vezi micanja parking mjesta po zonama
+			if (updatedReservation.getParkingType().equals(ParkingType.I_ZONE)) {
+				Parking parking = parkingService.findAllFreeParkingsFirstZone().stream()
+																		       .findFirst()
+																		       .orElseThrow(()->new FullParkingException("Parking is full!"));
+				parking.setParkingStatus(ParkingStatus.Occupied);
+				parkingRepository.save(parking);
+
+			} else {
+				Parking parking = parkingService.findAllFreeParkingsSecondZone().stream()
+																			    .findFirst()
+																			    .orElseThrow(()->new FullParkingException("Parking is full!"));
+				parking.setParkingStatus(ParkingStatus.Occupied);
+				parkingRepository.save(parking);
+
+			}
+			
+		} else if (updatedReservation.getReservationStatus().equals(ReservationStatus.IN_PROCESS)) {
+			// logika u vezi micanja parking mjesta po zonama
+
+			if (updatedReservation.getParkingType().equals(ParkingType.I_ZONE)) {
+				Parking parking = parkingService.findAllOccupiedParkingsFirstZone().stream()
+																		   		   .findFirst().get();
+	
+				parking.setParkingStatus(ParkingStatus.Free);
+				parkingRepository.save(parking);
+
+			} else {
+				Parking parking = parkingService.findAllOccupiedParkingsSecondZone().stream()
+																					.findFirst().get();
+
+				parking.setParkingStatus(ParkingStatus.Free);
+				parkingRepository.save(parking);
+
+			}
+			
+		}
+		
+		reservation.setReservationStatus(updatedReservation.getReservationStatus());
+		reservationRepository.save(reservation);
+		
+		return updatedReservation;
 	}
 	
 	

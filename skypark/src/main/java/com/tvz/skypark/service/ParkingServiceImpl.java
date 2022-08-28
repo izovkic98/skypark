@@ -71,4 +71,13 @@ public class ParkingServiceImpl implements ParkingService {
 		
 	}
 
+	@Override
+	public Parking updateParking(Parking updatedParking) {
+		Parking parking = parkingRepository.findByIdLike(updatedParking.getId());
+		parking.setParkingStatus(updatedParking.getParkingStatus());
+		parking.setParkingType(updatedParking.getParkingType());
+		
+		return parkingRepository.save(parking);
+	}
+
 }

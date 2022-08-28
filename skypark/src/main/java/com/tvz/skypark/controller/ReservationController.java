@@ -78,6 +78,16 @@ public class ReservationController {
 		}
 
 	}
+	
+	@PutMapping("/change-status")
+	private ResponseEntity<?> changeReservationStatus(@RequestBody ReservationDetailsDto updatedReservation) {
+		try {
+			return new ResponseEntity<>(reservationService.changeReservationStatus(updatedReservation), HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+
+	}
 
 	@DeleteMapping("{reservationId}")
 	public ResponseEntity<?> deleteReservation(@PathVariable Long reservationId) {

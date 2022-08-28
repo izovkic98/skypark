@@ -16,5 +16,6 @@ public interface ParkingService {
 	List<Parking> findAllOccupiedParkingsFirstZone();
 	List<Parking> findAllOccupiedParkingsSecondZone();
 	List<Parking> findAllParkingSpots();
+	Parking updateParking(Parking parking);
 
 }
