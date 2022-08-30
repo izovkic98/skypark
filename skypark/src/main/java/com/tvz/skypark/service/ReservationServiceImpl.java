@@ -2,6 +2,7 @@ package com.tvz.skypark.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) throws ReservationDateIsIncorrectException {
 
-		reservationDetailsDto.setReservationDate(LocalDateTime.now());
+		reservationDetailsDto.setReservationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		
 		if(reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
@@ -67,10 +68,12 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<ReservationDetailsDto> findAllReservationsOfUser(Long userId) {
 		
 		Comparator < LocalDateTime > comparator = new LocalDateTimeComparator();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		
 		return reservationRepository.findByUser_IdLike(userId).stream()
 															  .map(ReservationDetailsDto::new)
-															  .sorted((item1, item2) -> comparator.compare(item1.getReservationDate(), item2.getReservationDate()))
+															  .sorted((item1, item2) -> comparator.compare(LocalDateTime.parse(item1.getReservationDate(), formatter),
+																	  LocalDateTime.parse(item2.getReservationDate(), formatter)))
 															  .collect(Collectors.toList());
 	}
 
