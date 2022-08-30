@@ -68,6 +68,13 @@ public class ReservationController {
 	public List<ReservationDetailsDto> getAllReservations() {
 		return reservationService.findAllReservations();
 	}
+	
+	@GetMapping("/all/current")
+	public List<ReservationDetailsDto> getAllCurrentReservationsOfUser(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+		return reservationService.findAllCurrentReservations(userPrinciple.getId());
+	}
+	
+	
 
 	@PutMapping
 	private ResponseEntity<?> updateReservation(@RequestBody ReservationDetailsDto updatedReservation) {

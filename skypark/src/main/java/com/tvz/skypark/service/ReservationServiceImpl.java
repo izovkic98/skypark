@@ -185,10 +185,16 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		return updatedReservation;
 	}
-	
-	
-	
-	
 
+	@Override
+	public List<ReservationDetailsDto> findAllCurrentReservations(Long userId) {
+		return reservationRepository.findByUser_IdLike(userId).stream()
+				  .map(ReservationDetailsDto::new)
+				  .filter(reservation -> LocalDate.now().isBefore(reservation.getDateTo()))
+				  .filter(reservation -> LocalDate.now().isAfter(reservation.getDateFrom()))
+				  .collect(Collectors.toList());
+		
+	}
+	
 
 }
