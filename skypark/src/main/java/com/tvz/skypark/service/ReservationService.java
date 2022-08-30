@@ -23,7 +23,4 @@ public interface ReservationService {
 	void deleteReservation(Long reservationId) throws ReservationNotFoundException;
 	ReservationDetailsDto changeReservationStatus(ReservationDetailsDto updatedReservation) throws ReservationDateIsIncorrectException, FullParkingException;
 
-
-//	List<ReservationItem> findAllReservationsOfUser(Long userId);
-
 }

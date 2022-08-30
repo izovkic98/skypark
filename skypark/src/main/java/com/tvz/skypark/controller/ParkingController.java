@@ -31,6 +31,16 @@ public class ParkingController {
 		return parkingService.findAllParkingSpots();
 	}
 	
+	@GetMapping("/all-free-firstZone")
+	public List<Parking> getAllFreeParkingSpotsFirstZone(){
+		return parkingService.findAllFreeParkingsFirstZone();
+	}
+	
+	@GetMapping("/all-free-secondZone")
+	public List<Parking> getAllFreeParkingSpotsSecondZone(){
+		return parkingService.findAllFreeParkingsSecondZone();
+	}
+	
 	@PostMapping()
 	public ResponseEntity<?> createParking(@RequestBody Parking parking){
 		parkingService.saveParking(parking);

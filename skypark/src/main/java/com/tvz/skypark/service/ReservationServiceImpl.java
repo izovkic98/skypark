@@ -56,6 +56,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<ReservationDetailsDto> findAllReservations() {
 		return reservationRepository.findAll().stream()
 											  .map(ReservationDetailsDto::new)
+											  .sorted((item1, item2) -> item2.getReservationDate().compareTo(item1.getReservationDate()))
 											  .collect(Collectors.toList());
 	}
 
@@ -63,6 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<ReservationDetailsDto> findAllReservationsOfUser(Long userId) {
 		return reservationRepository.findByUser_IdLike(userId).stream()
 															  .map(ReservationDetailsDto::new)
+															  .sorted((item1, item2) -> item1.getReservationDate().compareTo(item2.getReservationDate()))
 															  .collect(Collectors.toList());
 	}
 
