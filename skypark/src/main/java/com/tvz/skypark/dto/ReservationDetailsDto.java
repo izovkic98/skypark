@@ -3,6 +3,7 @@ package com.tvz.skypark.dto;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.model.User;
@@ -27,7 +28,7 @@ public class ReservationDetailsDto implements Serializable{
 	private VehicleType vehicleType;
 	private LocalDate dateFrom;
 	private LocalDate dateTo;
-	private LocalDate reservationDate;
+	private LocalDateTime reservationDate;
 	private Double price;
 	private ReservationStatus reservationStatus;
 	private ParkingType parkingType;
@@ -118,12 +119,12 @@ public class ReservationDetailsDto implements Serializable{
 	}
 
 
-	public LocalDate getReservationDate() {
+	public LocalDateTime getReservationDate() {
 		return reservationDate;
 	}
 
 
-	public void setReservationDate(LocalDate reservationDate) {
+	public void setReservationDate(LocalDateTime reservationDate) {
 		this.reservationDate = reservationDate;
 	}
 

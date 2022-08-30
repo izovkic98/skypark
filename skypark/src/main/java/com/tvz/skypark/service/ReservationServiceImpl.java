@@ -1,9 +1,12 @@
 package com.tvz.skypark.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import com.tvz.skypark.model.Parking;
 import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.repository.ParkingRepository;
 import com.tvz.skypark.repository.ReservationRepository;
+import com.tvz.skypark.utils.LocalDateTimeComparator;
 import com.tvz.skypark.utils.ParkUtils.ParkingStatus;
 import com.tvz.skypark.utils.ParkUtils.ParkingType;
 import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
@@ -42,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) throws ReservationDateIsIncorrectException {
 
-		reservationDetailsDto.setReservationDate(LocalDate.now());
+		reservationDetailsDto.setReservationDate(LocalDateTime.now());
 		
 		if(reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
@@ -56,15 +60,17 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<ReservationDetailsDto> findAllReservations() {
 		return reservationRepository.findAll().stream()
 											  .map(ReservationDetailsDto::new)
-											  .sorted((item1, item2) -> item2.getReservationDate().compareTo(item1.getReservationDate()))
 											  .collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ReservationDetailsDto> findAllReservationsOfUser(Long userId) {
+		
+		Comparator < LocalDateTime > comparator = new LocalDateTimeComparator();
+		
 		return reservationRepository.findByUser_IdLike(userId).stream()
 															  .map(ReservationDetailsDto::new)
-															  .sorted((item1, item2) -> item1.getReservationDate().compareTo(item2.getReservationDate()))
+															  .sorted((item1, item2) -> comparator.compare(item1.getReservationDate(), item2.getReservationDate()))
 															  .collect(Collectors.toList());
 	}
 
@@ -188,11 +194,22 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public List<ReservationDetailsDto> findAllCurrentReservations(Long userId) {
-		return reservationRepository.findByUser_IdLike(userId).stream()
+		
+		List<ReservationDetailsDto> inBetween = reservationRepository.findByUser_IdLike(userId).stream()
 				  .map(ReservationDetailsDto::new)
 				  .filter(reservation -> LocalDate.now().isBefore(reservation.getDateTo()))
 				  .filter(reservation -> LocalDate.now().isAfter(reservation.getDateFrom()))
 				  .collect(Collectors.toList());
+		
+		List<ReservationDetailsDto> current = reservationRepository.findByUser_IdLike(userId).stream()
+				  .map(ReservationDetailsDto::new)
+				  .filter(reservation -> (LocalDate.now().equals(reservation.getDateTo()) || LocalDate.now().equals(reservation.getDateFrom())))
+				  .collect(Collectors.toList());
+		
+		List<ReservationDetailsDto> newList = Stream.concat(inBetween.stream(), current.stream()).toList();
+		
+		return newList;
+		
 		
 	}
 	
