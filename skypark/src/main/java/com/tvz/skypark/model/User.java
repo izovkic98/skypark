@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tvz.skypark.dto.UserDetailsDto;
 import com.tvz.skypark.dto.UserRegistrationDto;
 import com.tvz.skypark.utils.ParkUtils.Role;
+import com.tvz.skypark.utils.ParkUtils.Tier;
 
 import lombok.Data;
 
@@ -57,6 +58,13 @@ public class User implements Serializable {
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
+	
+	@Column(name = "loyalty_points", length = 100)
+	private Integer loyaltyPoints;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tier", length = 100)
+	private Tier tier;
 
 	@Column(name = "phone_number", length = 100, nullable = false)
 	private String phoneNumber;
@@ -106,7 +114,7 @@ public class User implements Serializable {
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
 		this.createTime = LocalDate.now();
-		this.role = Role.USER;
+		this.role = Role.ADMIN;
 	}
 	
 	public User(UserDetailsDto userDto) {

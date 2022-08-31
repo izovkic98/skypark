@@ -128,4 +128,8 @@ public class ParkUtils {
 		Free, Occupied
 	}
 	
+	public enum Tier {
+		SILVER, GOLD, PLATINUM
+	}
+	
 }

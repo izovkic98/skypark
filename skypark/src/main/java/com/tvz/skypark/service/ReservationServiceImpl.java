@@ -18,8 +18,10 @@ import com.tvz.skypark.exception.ReservationDateIsIncorrectException;
 import com.tvz.skypark.exception.ReservationNotFoundException;
 import com.tvz.skypark.model.Parking;
 import com.tvz.skypark.model.Reservation;
+import com.tvz.skypark.model.User;
 import com.tvz.skypark.repository.ParkingRepository;
 import com.tvz.skypark.repository.ReservationRepository;
+import com.tvz.skypark.repository.UserRepository;
 import com.tvz.skypark.utils.LocalDateTimeComparator;
 import com.tvz.skypark.utils.ParkUtils.ParkingStatus;
 import com.tvz.skypark.utils.ParkUtils.ParkingType;
@@ -32,28 +34,39 @@ public class ReservationServiceImpl implements ReservationService {
 	private final ReservationRepository reservationRepository;
 	
 	@Autowired
+	private final UserRepository userRepository;
+	
+	@Autowired
 	private final ParkingRepository parkingRepository;
 	
 	@Autowired
 	private final ParkingService parkingService;
 	
-	public ReservationServiceImpl(ReservationRepository reservationRepository, ParkingRepository parkingRepository, ParkingService parkingService) {
+	@Autowired PrivilegeService privilegeService;
+	
+	public ReservationServiceImpl(ReservationRepository reservationRepository, ParkingRepository parkingRepository,
+			ParkingService parkingService, UserRepository userRepository) {
 		this.reservationRepository = reservationRepository;
 		this.parkingRepository = parkingRepository;
 		this.parkingService = parkingService;
+		this.userRepository = userRepository;
 
 	}
 
 	@Override
 	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) throws ReservationDateIsIncorrectException {
-
-		reservationDetailsDto.setReservationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		
+		User user = userRepository.findByIdLike(reservationDetailsDto.getUser().getId());
 		
 		if(reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
 		}
+
+		reservationDetailsDto.setReservationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		
-			
+		// Loyalty points i doscount logika
+		privilegeService.loyaltyPoints(user, reservationDetailsDto.getPrice().floatValue());
+	
 		return new ReservationDetailsDto(reservationRepository.save(new Reservation(reservationDetailsDto)));
 	}
 
