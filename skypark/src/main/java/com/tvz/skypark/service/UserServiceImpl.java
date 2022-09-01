@@ -15,7 +15,9 @@ import com.tvz.skypark.exception.PasswordTooShortException;
 import com.tvz.skypark.exception.RequiredFieldIsEmptyException;
 import com.tvz.skypark.exception.UserNotFoundException;
 import com.tvz.skypark.exception.UsernameOrEmailAreAlreadyTakenException;
+import com.tvz.skypark.model.Discount;
 import com.tvz.skypark.model.User;
+import com.tvz.skypark.repository.DiscountRepository;
 import com.tvz.skypark.repository.UserRepository;
 import com.tvz.skypark.utils.ParkUtils.Role;
 
@@ -25,11 +27,15 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	
 	@Autowired
+	private final DiscountRepository discountRepository;
+	
+	@Autowired
     private PasswordEncoder passwordEncoder;
 
-	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, DiscountRepository discountRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.discountRepository= discountRepository;
 	}
 	
 	@Override
@@ -50,7 +56,13 @@ public class UserServiceImpl implements UserService {
 		else if(emailInUse)
 			throw new UsernameOrEmailAreAlreadyTakenException("Email se već koristi");
 		
-		return new UserDetailsDto(userRepository.save(new User(newUser)));
+		User rawUser = new User(newUser);
+		
+		UserDetailsDto savedUser = new UserDetailsDto(userRepository.save(rawUser));
+		
+		discountRepository.save(new Discount(rawUser));
+				
+		return savedUser ;
 	
 	}
 	

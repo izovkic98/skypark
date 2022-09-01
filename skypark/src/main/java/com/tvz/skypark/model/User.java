@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -59,12 +60,6 @@ public class User implements Serializable {
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
 	
-	@Column(name = "loyalty_points", length = 100)
-	private Integer loyaltyPoints;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "tier", length = 100)
-	private Tier tier;
 
 	@Column(name = "phone_number", length = 100, nullable = false)
 	private String phoneNumber;
@@ -75,6 +70,10 @@ public class User implements Serializable {
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY,  mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Reservation> reservations;
+	
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.LAZY,  mappedBy = "user", cascade = CascadeType.REMOVE)
+	private Discount discount;
 
 	@Transient
 	private String token;
@@ -98,8 +97,6 @@ public class User implements Serializable {
 		this.password = password;
 		this.address = address;
 		this.email = email;
-		this.loyaltyPoints = loyaltyPoints;
-		this.tier = tier;
 		this.phoneNumber = phoneNumber;
 		this.createTime = createTime;
 		this.reservations = reservations;

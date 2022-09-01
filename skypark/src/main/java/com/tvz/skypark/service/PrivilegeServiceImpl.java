@@ -3,9 +3,10 @@ package com.tvz.skypark.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tvz.skypark.model.Discount;
 import com.tvz.skypark.model.User;
+import com.tvz.skypark.repository.DiscountRepository;
 import com.tvz.skypark.repository.ReservationRepository;
-import com.tvz.skypark.repository.UserRepository;
 import com.tvz.skypark.utils.ParkUtils.Tier;
 import com.tvz.skypark.utils.PointsCalculator;
 
@@ -16,42 +17,44 @@ public class PrivilegeServiceImpl implements PrivilegeService{
 	ReservationRepository reservationRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private DiscountRepository discountRepository;
 	
 	@Autowired
 	private PointsCalculator pointsCalculator;
 
 	@Override
 	public Integer loyaltyPoints(User user, float amountSpent) {
+		
+		Discount discount = discountRepository.findByUser_IdLike(user.getId());
 
-		Tier tier = user.getTier();
+		Tier tier = discount.getTier();
 		Integer newPoints = pointsCalculator.calculateTotalPoints(tier, amountSpent);
 		
 		//setiranje novih bodova + sejvanje usera sa novim bodovima
-		if(user.getLoyaltyPoints() != null) {
-			user.setLoyaltyPoints(user.getLoyaltyPoints() + newPoints);
+		if(discount.getLoyaltyPoints() != null) {
+			discount.setLoyaltyPoints(discount.getLoyaltyPoints() + newPoints);
 		} else {
-			user.setLoyaltyPoints(newPoints);
+			discount.setLoyaltyPoints(newPoints);
 		}
 
-		user.setTier(updateTier(user));
-		userRepository.save(user);
+		discount.setTier(updateTier(discount));
+		discountRepository.save(discount);
 		
-		return user.getLoyaltyPoints();
+		return discount.getLoyaltyPoints();
 	}
 
 	@Override
-	public Tier updateTier(User user) {
+	public Tier updateTier(Discount discount) {
 
-		if (user.getLoyaltyPoints() > 25 && user.getLoyaltyPoints() <= 35) {
-			user.setTier(Tier.SILVER);
-		} else if (user.getLoyaltyPoints() > 35 && user.getLoyaltyPoints() <= 55) {
-			user.setTier(Tier.GOLD);
-		} else if (user.getLoyaltyPoints() > 55) {
-			user.setTier(Tier.PLATINUM);
+		if (discount.getLoyaltyPoints() > 5 && discount.getLoyaltyPoints() <= 10) {
+			discount.setTier(Tier.SILVER);
+		} else if (discount.getLoyaltyPoints() > 10 && discount.getLoyaltyPoints() <= 20) {
+			discount.setTier(Tier.GOLD);
+		} else if (discount.getLoyaltyPoints() > 20) {
+			discount.setTier(Tier.PLATINUM);
 		}
 
-		return user.getTier();
+		return discount.getTier();
 	}
 	
 }
