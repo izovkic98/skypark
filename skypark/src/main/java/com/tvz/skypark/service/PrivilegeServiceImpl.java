@@ -1,11 +1,8 @@
 package com.tvz.skypark.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tvz.skypark.model.Reservation;
 import com.tvz.skypark.model.User;
 import com.tvz.skypark.repository.ReservationRepository;
 import com.tvz.skypark.repository.UserRepository;
@@ -46,13 +43,11 @@ public class PrivilegeServiceImpl implements PrivilegeService{
 	@Override
 	public Tier updateTier(User user) {
 
-		List<Reservation> list = reservationRepository.findByUser_IdLike(user.getId());
-
-		if (list.size() > 1 && list.size() <= 3) {
+		if (user.getLoyaltyPoints() > 25 && user.getLoyaltyPoints() <= 35) {
 			user.setTier(Tier.SILVER);
-		} else if (list.size() > 3 && list.size() <= 4) {
+		} else if (user.getLoyaltyPoints() > 35 && user.getLoyaltyPoints() <= 55) {
 			user.setTier(Tier.GOLD);
-		} else if (list.size() > 4) {
+		} else if (user.getLoyaltyPoints() > 55) {
 			user.setTier(Tier.PLATINUM);
 		}
 
