@@ -88,8 +88,8 @@ public class User implements Serializable {
 	}
 
 	public User(Long id, String firstName, String lastName, String username, String password, String address,
-			String email, String phoneNumber, LocalDate createTime, List<Reservation> reservations, String token,
-			Role role) {
+			String email, Integer loyaltyPoints, Tier tier, String phoneNumber, LocalDate createTime,
+			List<Reservation> reservations, String token, Role role) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -98,12 +98,15 @@ public class User implements Serializable {
 		this.password = password;
 		this.address = address;
 		this.email = email;
+		this.loyaltyPoints = loyaltyPoints;
+		this.tier = tier;
 		this.phoneNumber = phoneNumber;
 		this.createTime = createTime;
 		this.reservations = reservations;
 		this.token = token;
 		this.role = role;
-	}	
+	}
+
 	
 	public User(UserRegistrationDto userDto) {
 		this.firstName = userDto.getFirstName();
@@ -128,5 +131,6 @@ public class User implements Serializable {
 		this.createTime = LocalDate.now();
 		this.role = Role.USER;
 	}
+
 
 }
