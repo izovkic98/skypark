@@ -42,7 +42,7 @@ public class UserController {
 	
 	
     @PutMapping("/change-password")
-    public ResponseEntity<?> update(@Validated @RequestParam String newPassword, @Validated @RequestParam String oldPassword,
+    public ResponseEntity<?> updatePassword(@Validated @RequestParam String newPassword, @Validated @RequestParam String oldPassword,
     		@Validated @RequestParam String confirmedNewPassword, @AuthenticationPrincipal UserPrinciple userPrinciple) {
     	
 		UserDetailsDto user = userService.findUserByUsername(userPrinciple.getUsername());

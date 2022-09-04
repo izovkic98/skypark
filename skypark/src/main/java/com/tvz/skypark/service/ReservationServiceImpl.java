@@ -32,18 +32,19 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Autowired
 	private final ReservationRepository reservationRepository;
-	
+
 	@Autowired
 	private final UserRepository userRepository;
-	
+
 	@Autowired
 	private final ParkingRepository parkingRepository;
-	
+
 	@Autowired
 	private final ParkingService parkingService;
-	
-	@Autowired PrivilegeService privilegeService;
-	
+
+	@Autowired
+	PrivilegeService privilegeService;
+
 	public ReservationServiceImpl(ReservationRepository reservationRepository, ParkingRepository parkingRepository,
 			ParkingService parkingService, UserRepository userRepository) {
 		this.reservationRepository = reservationRepository;
@@ -54,40 +55,44 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto) throws ReservationDateIsIncorrectException {
-		
-		User user = userRepository.findByIdLike(reservationDetailsDto.getUser().getId());
-		
-		if(reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
+	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto)
+			throws ReservationDateIsIncorrectException {
+
+		boolean userFlag = reservationDetailsDto.getUser() != null;
+
+		if (reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
 		}
 
-		reservationDetailsDto.setReservationDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		if (userFlag) {
+			User user = userRepository.findByIdLike(reservationDetailsDto.getUser().getId());
+
+			// Loyalty points i doscount logika
+			privilegeService.loyaltyPoints(user, reservationDetailsDto.getPrice().floatValue());
+		}
 		
-		// Loyalty points i doscount logika
-		privilegeService.loyaltyPoints(user, reservationDetailsDto.getPrice().floatValue());
-	
+		reservationDetailsDto
+						.setReservationDate(LocalDateTime.now()
+						.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
 		return new ReservationDetailsDto(reservationRepository.save(new Reservation(reservationDetailsDto)));
 	}
 
 	@Override
 	public List<ReservationDetailsDto> findAllReservations() {
-		return reservationRepository.findAll().stream()
-											  .map(ReservationDetailsDto::new)
-											  .collect(Collectors.toList());
+		return reservationRepository.findAll().stream().map(ReservationDetailsDto::new).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ReservationDetailsDto> findAllReservationsOfUser(Long userId) {
-		
-		Comparator < LocalDateTime > comparator = new LocalDateTimeComparator();
+
+		Comparator<LocalDateTime> comparator = new LocalDateTimeComparator();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		
-		return reservationRepository.findByUser_IdLike(userId).stream()
-															  .map(ReservationDetailsDto::new)
-															  .sorted((item1, item2) -> comparator.compare(LocalDateTime.parse(item1.getReservationDate(), formatter),
-																	  LocalDateTime.parse(item2.getReservationDate(), formatter)))
-															  .collect(Collectors.toList());
+
+		return reservationRepository.findByUser_IdLike(userId).stream().map(ReservationDetailsDto::new)
+				.sorted((item1, item2) -> comparator.compare(LocalDateTime.parse(item1.getReservationDate(), formatter),
+						LocalDateTime.parse(item2.getReservationDate(), formatter)))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -105,14 +110,15 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public ReservationDetailsDto updateReservation(ReservationDetailsDto updatedReservation) throws ReservationDateIsIncorrectException, FullParkingException {
-		
+	public ReservationDetailsDto updateReservation(ReservationDetailsDto updatedReservation)
+			throws ReservationDateIsIncorrectException, FullParkingException {
+
 		Reservation reservation = reservationRepository.findByIdLike(updatedReservation.getId());
-		
-		if(updatedReservation.getDateFrom().isAfter(updatedReservation.getDateTo())) {
+
+		if (updatedReservation.getDateFrom().isAfter(updatedReservation.getDateTo())) {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
 		}
-		
+
 		reservation.setReservationStatus(updatedReservation.getReservationStatus());
 		reservation.setVehicleModel(updatedReservation.getVehicleModel());
 		reservation.setVehicleManufacturer(updatedReservation.getVehicleManufacturer());
@@ -134,23 +140,23 @@ public class ReservationServiceImpl implements ReservationService {
 	public void deleteReservation(Long reservationId) throws ReservationNotFoundException {
 		Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
 		if (reservation != null) {
-		
+
 			// logika u vezi micanja parking mjesta po zonama
 
-			if (reservation.getParkingType().equals(ParkingType.I_ZONE) && reservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
-				Parking parking = parkingService.findAllOccupiedParkingsFirstZone().stream()
-																		   		   .findFirst().get();
+			if (reservation.getParkingType().equals(ParkingType.I_ZONE)
+					&& reservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
+				Parking parking = parkingService.findAllOccupiedParkingsFirstZone().stream().findFirst().get();
 				parking.setParkingStatus(ParkingStatus.Free);
 				parkingRepository.save(parking);
 
-			} else if (reservation.getParkingType().equals(ParkingType.II_ZONE) && reservation.getReservationStatus().equals(ReservationStatus.APPROVED)){
-				Parking parking = parkingService.findAllOccupiedParkingsSecondZone().stream()
-																					.findFirst().get();
+			} else if (reservation.getParkingType().equals(ParkingType.II_ZONE)
+					&& reservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
+				Parking parking = parkingService.findAllOccupiedParkingsSecondZone().stream().findFirst().get();
 				parking.setParkingStatus(ParkingStatus.Free);
 				parkingRepository.save(parking);
 
 			}
-			
+
 			reservationRepository.deleteById(reservationId);
 		} else {
 			throw new ReservationNotFoundException("Reservation under id:" + reservationId + " is not found.");
@@ -158,76 +164,70 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public ReservationDetailsDto changeReservationStatus(ReservationDetailsDto updatedReservation) throws ReservationDateIsIncorrectException, FullParkingException {
-		
+	public ReservationDetailsDto changeReservationStatus(ReservationDetailsDto updatedReservation)
+			throws ReservationDateIsIncorrectException, FullParkingException {
+
 		Reservation reservation = reservationRepository.findByIdLike(updatedReservation.getId());
-		
-		if(updatedReservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
-			
+
+		if (updatedReservation.getReservationStatus().equals(ReservationStatus.APPROVED)) {
+
 			// logika u vezi micanja parking mjesta po zonama
 			if (updatedReservation.getParkingType().equals(ParkingType.I_ZONE)) {
-				Parking parking = parkingService.findAllFreeParkingsFirstZone().stream()
-																		       .findFirst()
-																		       .orElseThrow(()->new FullParkingException("Parking is full!"));
+				Parking parking = parkingService.findAllFreeParkingsFirstZone().stream().findFirst()
+						.orElseThrow(() -> new FullParkingException("Parking is full!"));
 				parking.setParkingStatus(ParkingStatus.Occupied);
 				parkingRepository.save(parking);
 
 			} else {
-				Parking parking = parkingService.findAllFreeParkingsSecondZone().stream()
-																			    .findFirst()
-																			    .orElseThrow(()->new FullParkingException("Parking is full!"));
+				Parking parking = parkingService.findAllFreeParkingsSecondZone().stream().findFirst()
+						.orElseThrow(() -> new FullParkingException("Parking is full!"));
 				parking.setParkingStatus(ParkingStatus.Occupied);
 				parkingRepository.save(parking);
 
 			}
-			
+
 		} else if (updatedReservation.getReservationStatus().equals(ReservationStatus.IN_PROCESS)) {
 			// logika u vezi micanja parking mjesta po zonama
 
 			if (updatedReservation.getParkingType().equals(ParkingType.I_ZONE)) {
-				Parking parking = parkingService.findAllOccupiedParkingsFirstZone().stream()
-																		   		   .findFirst().get();
-	
+				Parking parking = parkingService.findAllOccupiedParkingsFirstZone().stream().findFirst().get();
+
 				parking.setParkingStatus(ParkingStatus.Free);
 				parkingRepository.save(parking);
 
 			} else {
-				Parking parking = parkingService.findAllOccupiedParkingsSecondZone().stream()
-																					.findFirst().get();
+				Parking parking = parkingService.findAllOccupiedParkingsSecondZone().stream().findFirst().get();
 
 				parking.setParkingStatus(ParkingStatus.Free);
 				parkingRepository.save(parking);
 
 			}
-			
+
 		}
-		
+
 		reservation.setReservationStatus(updatedReservation.getReservationStatus());
 		reservationRepository.save(reservation);
-		
+
 		return updatedReservation;
 	}
 
 	@Override
 	public List<ReservationDetailsDto> findAllCurrentReservations(Long userId) {
-		
+
 		List<ReservationDetailsDto> inBetween = reservationRepository.findByUser_IdLike(userId).stream()
-				  .map(ReservationDetailsDto::new)
-				  .filter(reservation -> LocalDate.now().isBefore(reservation.getDateTo()))
-				  .filter(reservation -> LocalDate.now().isAfter(reservation.getDateFrom()))
-				  .collect(Collectors.toList());
-		
+				.map(ReservationDetailsDto::new)
+				.filter(reservation -> LocalDate.now().isBefore(reservation.getDateTo()))
+				.filter(reservation -> LocalDate.now().isAfter(reservation.getDateFrom())).collect(Collectors.toList());
+
 		List<ReservationDetailsDto> current = reservationRepository.findByUser_IdLike(userId).stream()
-				  .map(ReservationDetailsDto::new)
-				  .filter(reservation -> (LocalDate.now().equals(reservation.getDateTo()) || LocalDate.now().equals(reservation.getDateFrom())))
-				  .collect(Collectors.toList());
-		
+				.map(ReservationDetailsDto::new).filter(reservation -> (LocalDate.now().equals(reservation.getDateTo())
+						|| LocalDate.now().equals(reservation.getDateFrom())))
+				.collect(Collectors.toList());
+
 		List<ReservationDetailsDto> newList = Stream.concat(inBetween.stream(), current.stream()).toList();
-		
+
 		return newList;
-		
-		
+
 	}
-	
 
 }

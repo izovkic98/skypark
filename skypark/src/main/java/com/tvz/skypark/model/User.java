@@ -114,7 +114,7 @@ public class User implements Serializable {
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
 		this.createTime = LocalDate.now();
-		this.role = Role.ADMIN;
+		this.role = Role.USER;
 	}
 	
 	public User(UserDetailsDto userDto) {
