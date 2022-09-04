@@ -19,6 +19,7 @@ import com.tvz.skypark.model.Discount;
 import com.tvz.skypark.model.User;
 import com.tvz.skypark.repository.DiscountRepository;
 import com.tvz.skypark.repository.UserRepository;
+import com.tvz.skypark.utils.JavaMailUtil;
 import com.tvz.skypark.utils.ParkUtils.Role;
 
 @Service
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
     private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+    private JavaMailUtil javaMailUtil;
 
 	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, DiscountRepository discountRepository) {
 		this.userRepository = userRepository;
@@ -39,7 +43,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public UserDetailsDto saveUser (UserRegistrationDto newUser) throws UsernameOrEmailAreAlreadyTakenException, RequiredFieldIsEmptyException  {
+	public UserDetailsDto saveUser (UserRegistrationDto newUser) throws UsernameOrEmailAreAlreadyTakenException, RequiredFieldIsEmptyException {
 
 		if(newUser.getPassword().length() < 4) {
 			throw new PasswordTooShortException("Password is shorther than 4 charachters.");

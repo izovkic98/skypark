@@ -32,6 +32,7 @@ public class AuthenticationController {
 		try {
 			return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
 		} catch ( UsernameOrEmailAreAlreadyTakenException|RequiredFieldIsEmptyException e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}	
 	}
