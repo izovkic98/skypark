@@ -1,7 +1,7 @@
 package com.tvz.skypark.utils;
 
 import java.util.Properties;
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -55,8 +55,10 @@ public class JavaMailUtil {
 		System.out.println("Message sent succesfully");
 	}
 	
-	private Message prepareMessage(Session session, String myAccountEmail,String recipient, String firstName ){
-		String uuid = UUID.randomUUID().toString();
+	private Message prepareMessage(Session session, String myAccountEmail, String recipient, String firstName ){
+		
+		Integer randomNum = ThreadLocalRandom.current().nextInt(10000, 99999);
+		String code = String.valueOf(randomNum);
 		
 		try {
 			Message message = new MimeMessage(session);
@@ -64,7 +66,7 @@ public class JavaMailUtil {
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject("You won free parking !");
 			message.setText("Hey there " + firstName 
-					+ ",\n\nYour code for free parking is : " + uuid + "\n"
+					+ ",\n\nYour code for free parking is : " + code + "\n"
 			        + "Keep this code in case there is some sort of inconvenience regarding your free reservation.\n"
 			        + "Your loyalty points will reset, so you can start collecting them again to win another prize!"
 			        +"\n\nBest regards, \n\nPark Application");
