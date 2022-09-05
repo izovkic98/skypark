@@ -24,8 +24,9 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
 	@Autowired
 	private PointsCalculator pointsCalculator;
-	
-	@Autowired JavaMailUtil javaMailUtil;
+
+	@Autowired
+	JavaMailUtil javaMailUtil;
 
 	@Override
 	public Integer loyaltyPoints(User user, float amountSpent) {
@@ -35,14 +36,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 		Tier tier = discount.getTier();
 		Integer newPoints = pointsCalculator.calculateTotalPoints(tier, amountSpent);
 
-		boolean freeParkingFlag = (discount.getLoyaltyPoints() + newPoints) > 20;
-		
-		
 		// setiranje novih bodova + sejvanje usera sa novim bodovima
-		if ((discount.getLoyaltyPoints() != null) && (!freeParkingFlag)) {
+		if ((discount.getLoyaltyPoints() != null) && (!((discount.getLoyaltyPoints() + newPoints) > 20))) {
 			discount.setLoyaltyPoints(discount.getLoyaltyPoints() + newPoints);
-		} else if ((discount.getLoyaltyPoints() != null) && (freeParkingFlag)) {
-				
+		} else if ((discount.getLoyaltyPoints() != null) && (((discount.getLoyaltyPoints() + newPoints) > 20))) {
+
 			// slanje maila
 			try {
 				javaMailUtil.sendMail(user);
@@ -53,7 +51,21 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 			discount.setLoyaltyPoints(0);
 			discount.setTier(null);
 		} else {
+
 			discount.setLoyaltyPoints(newPoints);
+			
+			if (newPoints > 20) {
+				// slanje maila
+				try {
+					javaMailUtil.sendMail(user);
+				} catch (MessagingException e) {
+					e.printStackTrace(System.out);
+				}
+
+				discount.setLoyaltyPoints(0);
+				discount.setTier(null);
+			}
+
 		}
 
 		discount.setTier(updateTier(discount));

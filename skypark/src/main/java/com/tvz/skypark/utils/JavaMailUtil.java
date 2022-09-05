@@ -1,7 +1,9 @@
 package com.tvz.skypark.utils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -31,15 +33,14 @@ public class JavaMailUtil {
 
     @Value("${spring.mail.password}")
     private String MY_PASSWORD;
-    
-    private static final Integer randomNum = ThreadLocalRandom.current().nextInt(10000000, 99999999);
 	
 	public void sendMail(User user) throws MessagingException {
+		
+		List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		Collections.shuffle(list);
+		Integer code = 1000*list.get(0) + 100*list.get(1) + 10*list.get(2) + list.get(3);
 
-		System.out.println("Preparing to send email");
-		
 		Properties properties = new Properties();
-		
 		properties.put("mail.smtp.auth","true");
 		properties.put("mail.smtp.starttls.enable","true");
 		properties.put("mail.smtp.host","smtp.gmail.com");
@@ -57,18 +58,16 @@ public class JavaMailUtil {
 			}
 			
 		});
-		Message message = prepareMessage(session,myAccountEmail, user.getEmail(), user.getFirstName());
+		Message message = prepareMessage(session,myAccountEmail, user.getEmail(), user.getFirstName(), code);
 
 		Transport.send(message);
 		
-		user.getDiscount().setCode(String.valueOf(randomNum));
+		user.getDiscount().setCode(String.valueOf(code));
 		
-		System.out.println("Message sent succesfully");
 	}
 	
-	private Message prepareMessage(Session session, String myAccountEmail, String recipient, String firstName ){
+	private Message prepareMessage(Session session, String myAccountEmail, String recipient, String firstName, Integer code ){
 		
-		String code = String.valueOf(randomNum);
 		
 		try {
 			Message message = new MimeMessage(session);
@@ -76,18 +75,16 @@ public class JavaMailUtil {
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject("You won free parking !");
 			message.setText("Hey there " + firstName 
-					+ ",\n\nYour code for free parking is : " + code + "\n"
+					+ ",\n\nYour code for free parking is : " + String.valueOf(code) + "\n"
 			        + "Keep this code in case there is some sort of inconvenience regarding your free reservation.\n"
 			        + "Your loyalty points will reset, so you can start collecting them again to win another prize!"
 			        +"\n\nBest regards, \n\nPark Application");
 			
 			return message;
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(System.out);
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(System.out);
 		}
 		
 		return null;
