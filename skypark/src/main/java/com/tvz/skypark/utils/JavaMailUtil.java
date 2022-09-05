@@ -13,19 +13,28 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.tvz.skypark.model.User;
+import com.tvz.skypark.repository.DiscountRepository;
+
 @Component
 public class JavaMailUtil {
+	
+	@Autowired
+	DiscountRepository discountRepository;
 	
     @Value("${spring.mail.username}")
     private String MY_ACCOUNT_EMAIL;
 
     @Value("${spring.mail.password}")
     private String MY_PASSWORD;
+    
+    private static final Integer randomNum = ThreadLocalRandom.current().nextInt(10000000, 99999999);
 	
-	public void sendMail(String recipient, String firstName) throws MessagingException {
+	public void sendMail(User user) throws MessagingException {
 
 		System.out.println("Preparing to send email");
 		
@@ -48,16 +57,17 @@ public class JavaMailUtil {
 			}
 			
 		});
-		Message message = prepareMessage(session,myAccountEmail,recipient, firstName);
+		Message message = prepareMessage(session,myAccountEmail, user.getEmail(), user.getFirstName());
 
 		Transport.send(message);
+		
+		user.getDiscount().setCode(String.valueOf(randomNum));
 		
 		System.out.println("Message sent succesfully");
 	}
 	
 	private Message prepareMessage(Session session, String myAccountEmail, String recipient, String firstName ){
 		
-		Integer randomNum = ThreadLocalRandom.current().nextInt(10000, 99999);
 		String code = String.valueOf(randomNum);
 		
 		try {

@@ -33,6 +33,9 @@ public class Discount implements Serializable{
 	@Column(name = "loyalty_points", length = 100)
 	private Integer loyaltyPoints;
 	
+	@Column(name = "code", length = 100)
+	private String code;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tier", length = 100)
 	private Tier tier;
@@ -44,18 +47,18 @@ public class Discount implements Serializable{
 	public Discount() {
 		super();
 	}
-	
-	public Discount(Long id, Integer loyaltyPoints, Tier tier, User user) {
-		super();
-		this.id = id;
-		this.loyaltyPoints = loyaltyPoints;
-		this.tier = tier;
-		this.user = user;
-	}
-	
+		
 	public Discount(User user) {
 		this.user = user;
 	}
 
+	public Discount(Long id, Integer loyaltyPoints, String code, Tier tier, User user) {
+		super();
+		this.id = id;
+		this.loyaltyPoints = loyaltyPoints;
+		this.code = code;
+		this.tier = tier;
+		this.user = user;
+	}
 	
 }

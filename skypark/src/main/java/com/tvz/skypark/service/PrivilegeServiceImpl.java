@@ -35,14 +35,17 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 		Tier tier = discount.getTier();
 		Integer newPoints = pointsCalculator.calculateTotalPoints(tier, amountSpent);
 
+		boolean freeParkingFlag = (discount.getLoyaltyPoints() + newPoints) > 20;
+		
+		
 		// setiranje novih bodova + sejvanje usera sa novim bodovima
-		if ((discount.getLoyaltyPoints() != null) && (discount.getLoyaltyPoints() < 50 )) {
+		if ((discount.getLoyaltyPoints() != null) && (!freeParkingFlag)) {
 			discount.setLoyaltyPoints(discount.getLoyaltyPoints() + newPoints);
-		} else if ((discount.getLoyaltyPoints() != null) && (discount.getLoyaltyPoints() >= 50)) {
+		} else if ((discount.getLoyaltyPoints() != null) && (freeParkingFlag)) {
 				
 			// slanje maila
 			try {
-				javaMailUtil.sendMail(user.getEmail(), user.getFirstName());
+				javaMailUtil.sendMail(user);
 			} catch (MessagingException e) {
 				e.printStackTrace(System.out);
 			}

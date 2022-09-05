@@ -10,6 +10,7 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
 
 	Discount findByIdLike(Long id);
 	Discount findByUser_IdLike(Long userId);
+	Discount findByCodeLike(String code);
 	
  
 }
