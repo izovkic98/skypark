@@ -1,5 +1,6 @@
 package com.tvz.skypark.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import com.tvz.skypark.exception.ReservationNotFoundException;
 @Service
 public interface ReservationService {
 
-	ReservationDetailsDto saveReservation(ReservationDetailsDto reservation) throws ReservationDateIsIncorrectException;
+	ReservationDetailsDto saveReservation(ReservationDetailsDto reservation) throws ReservationDateIsIncorrectException, IOException;
 	List<ReservationDetailsDto> findAllReservations();
 	ReservationDetailsDto updateReservation(ReservationDetailsDto updatedReservation) throws ReservationDateIsIncorrectException, FullParkingException;
 	

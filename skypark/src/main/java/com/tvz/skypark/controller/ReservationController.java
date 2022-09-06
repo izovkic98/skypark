@@ -37,10 +37,10 @@ public class ReservationController {
 	private ReservationService reservationService;
 
 	@PostMapping
-	public ResponseEntity<?> saveReservation(@RequestBody final ReservationDetailsDto reservation) {
+	public ResponseEntity<?> saveReservation(@RequestBody final ReservationDetailsDto reservation, @AuthenticationPrincipal UserPrinciple userPrinciple) {
 		try {
 			return new ResponseEntity<>(reservationService.saveReservation(reservation), HttpStatus.CREATED);
-		} catch (ReservationDateIsIncorrectException e) {
+		} catch (ReservationDateIsIncorrectException | IOException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 		}
 
@@ -122,15 +122,12 @@ public class ReservationController {
        }
         
        String contentType = "application/pdf";
-       String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
+       String headerValue = "attachment; filename=\""+ "Potvrda_"+ resource.getFilename() + "\"";
         
        return ResponseEntity.ok()
                .contentType(MediaType.parseMediaType(contentType))
                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                .body(resource);       
    }
-
-
-		
 
 }

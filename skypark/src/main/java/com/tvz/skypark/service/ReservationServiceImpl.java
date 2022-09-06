@@ -1,5 +1,6 @@
 package com.tvz.skypark.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ import com.tvz.skypark.utils.LocalDateTimeComparator;
 import com.tvz.skypark.utils.ParkUtils.ParkingStatus;
 import com.tvz.skypark.utils.ParkUtils.ParkingType;
 import com.tvz.skypark.utils.ParkUtils.ReservationStatus;
+import com.tvz.skypark.utils.PdfCreationUtil;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -45,6 +48,9 @@ public class ReservationServiceImpl implements ReservationService {
 	@Autowired
 	PrivilegeService privilegeService;
 
+	@Autowired
+	PdfCreationUtil creationUtil;
+	
 	public ReservationServiceImpl(ReservationRepository reservationRepository, ParkingRepository parkingRepository,
 			ParkingService parkingService, UserRepository userRepository) {
 		this.reservationRepository = reservationRepository;
@@ -56,16 +62,17 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public ReservationDetailsDto saveReservation(ReservationDetailsDto reservationDetailsDto)
-			throws ReservationDateIsIncorrectException {
+			throws ReservationDateIsIncorrectException, IOException {
 
 		boolean userFlag = reservationDetailsDto.getUser() != null;
+		User user = null;
 
 		if (reservationDetailsDto.getDateFrom().isAfter(reservationDetailsDto.getDateTo())) {
 			throw new ReservationDateIsIncorrectException("Date from is after date to which is wrong!");
 		}
 
 		if (userFlag) {
-			User user = userRepository.findByIdLike(reservationDetailsDto.getUser().getId());
+			user  = userRepository.findByIdLike(reservationDetailsDto.getUser().getId());
 
 			// Loyalty points i doscount logika
 			privilegeService.loyaltyPoints(user, reservationDetailsDto.getPrice().floatValue());
@@ -74,6 +81,13 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationDetailsDto
 						.setReservationDate(LocalDateTime.now()
 						.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		
+		//GENERIRANJE PDFA I SPREMANJE U BAZU
+		String fileCode = RandomStringUtils.randomAlphanumeric(8);
+		
+		reservationDetailsDto.setCode(fileCode);
+		
+		creationUtil.generatePDF(reservationDetailsDto, fileCode, user );
 
 		return new ReservationDetailsDto(reservationRepository.save(new Reservation(reservationDetailsDto)));
 	}

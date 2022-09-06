@@ -31,6 +31,7 @@ public class ReservationDetailsDto implements Serializable{
 	private Double price;
 	private ReservationStatus reservationStatus;
 	private ParkingType parkingType;
+	private String code;
 
 	public ReservationDetailsDto() {
 		
@@ -48,6 +49,7 @@ public class ReservationDetailsDto implements Serializable{
 		this.price = reservation.getPrice();
 		this.reservationStatus = reservation.getReservationStatus();
 		this.parkingType = reservation.getParkingType();
+		this.code = reservation.getCode();
 	}
 
 
@@ -154,6 +156,13 @@ public class ReservationDetailsDto implements Serializable{
 	public void setParkingType(ParkingType parkingType) {
 		this.parkingType = parkingType;
 	}
-	
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
 }

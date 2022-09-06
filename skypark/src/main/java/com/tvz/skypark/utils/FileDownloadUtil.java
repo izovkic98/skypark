@@ -12,7 +12,7 @@ public class FileDownloadUtil {
     private Path foundFile;
      
     public Resource getFileAsResource(String fileCode) throws IOException {
-        Path dirPath = Paths.get("C:\\Users\\Ivan");
+        Path dirPath = Paths.get("C:\\Users\\Ivan\\Server");
         
         System.out.println(dirPath.toAbsolutePath());
          
